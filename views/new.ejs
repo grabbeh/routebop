@@ -74,7 +74,7 @@
            modal: false,
            onProgress: function(bytesReceived, bytesExpected){
              var result = bytesReceived / bytesExpected;
-             if (results !== NaN) {
+             if (result !== NaN) {
              $('#progress').text("Progress: " + (bytesReceived / bytesExpected * 100).toFixed(2)+'%');
            }
            },
