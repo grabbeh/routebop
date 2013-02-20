@@ -1,0 +1,82 @@
+<!doctype html>
+
+<head>
+<%-include head.ejs %>
+
+<!--scripts-->
+<script src="http://code.jquery.com/jquery-latest.js" type="text/javascript"></script>
+
+
+</head>
+<body>
+<div id="maincontainer">
+<%-include header.ejs %>
+<div id="body"> 
+      <div id="container">
+        <div class="row">
+                  <div class="twelvecol last"><p id="accountbox"><b>Welcome back, <%= user._id %></b></p></div>
+        </div>
+                <div class="row">
+                <div class="fourcol">
+                    
+                    <form method="post" action="/account">
+                        <p><b>Info</b></p>
+                        <div><textarea id="info" name="info" rows="7" type="text"/></textarea></div>
+                        <p><b>Email</b></p>
+                        <div><input id="email" class="newinput" name="email" type="text"/></div>
+                        
+                        <div><p><input class="newbutton" type="submit" value="Update/add information"><p></div>
+                    </form>
+              </div>
+
+          <div class="fourcol"><div class="title"><p>Submitted routes<p></div><ul id="infooutput" class="homelist"></ul>
+          </div>
+          <div class="fourcol last"><div class="title"><p>Favourites</p></div><ul id="favoutput" class="homelist"></ul>
+          </div>
+
+          </div>
+
+    <div class="clearfooter"></div> 
+</div>
+   <%- include footer.ejs %>
+</div>
+</body>
+</html>
+
+<script>
+$(document).ready(function(){
+
+var clientuser = <%- clientUser %>;
+var favarray = clientuser.favourites;
+$('#info').val(clientuser.info);
+$('#email').val(clientuser.email);
+
+createFavListings(favarray);
+
+var maps = <%- maps %>;
+  for (var i = 0; i < maps.length; i++) {
+    var url = maps[i]._id;
+    var fullshowurl = "<a href='/show/" + url + "'>Route</a>";
+    var fulldeleteurl = "<a href='/delete/" + url + "'>Delete</a>";
+    var fullediturl = "<a href='/edit/" + url + "'>Edit</a>";
+    var title = "<li>" + maps[i].title + " | " + fullshowurl + " | " + fulldeleteurl + " | " + fullediturl + "</li>";
+    $('#infooutput').append(title); 
+    };
+});
+
+
+function createFavListings(favarray) {
+ for (var i = 0; i < favarray.length; i++) {
+    var id = favarray[i]._id;
+    var title = favarray[i].title;
+    var fullurl = "<a href='/show/" + id + "'>Route</a>";
+    var fulldeletefavurl = "<a href=/delfav/" + id + ">De-favourite</a>";
+    var title = "<li>" + title + " | " + fullurl + " | " + fulldeletefavurl + "</li>";
+    $('#favoutput').append(title);
+    
+  };
+};
+
+</script>
+
+

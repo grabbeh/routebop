@@ -1,0 +1,333 @@
+<!doctype html>
+<head>
+    <%-include head.ejs %>
+</head>
+<body>
+    <div id="maincontainer" />
+    <%-include header.ejs %>
+    <div id="body">
+        <div id="container">
+            <div class="homerow">
+                <div class="ninecol" id="hometitle">Routebop - Find, Save & Share Journeys You Love</div>
+            </div>
+            <div class="maphomerow">
+                <div class="maptwelvecol last">
+                    <div id="homemap">
+                        <div id="mymap"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="homerow">
+                <div class="twelvecol">
+                    <div id="searchbox">Routes
+                        <span id="homegeolocate"> near me</span><span id="geolocatemargin"> or routes near</span><input id="homeuserlocation" /><span id="homeuserlocationsubmit"> Go </span>
+                    </div>
+                </div>
+            </div>
+            <div class="homerow">
+                <div class="twelvecol" id="lineblock"></div>
+            </div>
+            <div class="homerow">
+                <div class="threecol" id="homebuttontext">
+                    <div class="homebutton" id="search"><a class="fill-div" href="/map">Search</a></div>
+                </div>
+                <div class="threecol">
+                    <div class="htext">Browse through user journeys to discover the best parts of cities and countries around the World.</div>
+                </div>
+                <div class="threecol">
+                    <div id="homebuttontext">
+                        <div class="homebutton" id="add"><a class="fill-div" href="/new">Add</a></div>
+                    </div>
+                </div>
+                <div class="threecol last">
+                    <div class="htext">Submit your favourite routes to the site so others can benefit, whether A to B or epic road trips.</div>
+                </div>
+            </div>
+            <div class="homerow">
+                <div class="twelvecol" id="lineblocktwo"></div>
+            </div>
+            <div class="homerow">
+                <div class="threecol" id="firstlistbox">
+                    <b>Popular routes</b>
+                    <ul class="list" id="mostfavourited"></ul>
+                </div>
+                <div class="threecol" id="listbox">
+                    <b>Latest routes</b>
+                    <ul class="list" id="latestwanders"></ul>
+                </div>
+                <div class="threecol" id="listbox">
+                    <b>Places</b>
+                    <ul class="list">
+                        <li><a href="/places/london">London</a></li>
+                        <li><a href="/places/paris">Paris</a></li>
+                        <li><a href="/places/berlin">Berlin</a></li>
+                        <li><a href="/places/new york">New York</a></li>
+                        <li><a href="/places/san francisco">San Francisco</a></li>
+                    </ul>
+                </div>
+                <div class="threecol last" id="listbox">
+                    <b>Tags</b>
+                    <ul class="list">
+                        <li><a href="/tags/pub">Pubs</a></li>
+                        <li><a href="/tags/restaurant">Restaurants</a></li>
+                        <li><a href="/tags/museum">Museums</a></li>
+                        <li><a href="/tags/park">Parks</a></li>
+                        <li><a href="/tags/cafe">Cafes</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="homerow">
+                <div class="twelvecol" id="lineblock"></div>
+            </div>
+            <div class="homerow">
+                <div class="threecol" id="homebuttontext">
+                    <div class="homebutton" id="tour"><a class="fill-div" href="/blog">Blog</a></div>
+                </div>
+                <div class="threecol">
+                    <div class="htext">Read about what we've been up to, including on the technical side of the site.</div>
+                </div>
+                <div class="threecol">
+                    <div id="homebuttontext">
+                        <div class="homebutton" id="login"><a class="fill-div" href="/login">Login</a></div>
+                    </div>
+                </div>
+                <div class="threecol last">
+                    <div class="htext">Create an account and login to save your, and other users' routes for future reference.</div>
+                </div>
+            </div>
+            
+            <div class="clearfooter"></div>
+        </div>
+        <%- include footer.ejs %>
+    </div>
+</body>
+</html>
+<script>
+    var map;
+    var markersarray = [];
+    var mc;
+    var infowindow = new google.maps.InfoWindow();
+    
+    $(document).ready(function() {
+    
+    var maps = <%- maps %>;
+    var datemaps = <%- datemaps %>;
+    createMapListings(maps, '#mostfavourited');
+    createMapListings(datemaps, '#latestwanders');
+     
+        // initial create map function to push map bounds, add event listeners - for drag on push.
+        create_map();
+    
+        $('#homeuserlocation').keyup(function (e) {
+          if (e.which == 13) {
+            geocodeAddress();   
+          }
+        });
+    
+        $('#homeuserlocationsubmit').click(function() {
+            geocodeAddress();
+        });
+    
+        $("#homegeolocate").click(function() {
+            navigator.geolocation.getCurrentPosition(geolocate, geolocateError,{timeout:5000});
+        });
+    
+        $('#maptags').delegate('li', 'click', function(){
+            submittag = $(this).text().trim();        
+            var postbounds = map.getBounds();
+            processMapBounds(postbounds);
+            ajaxTagPost(boxarray);
+            google.maps.event.clearListeners(map);
+        })
+    
+        $('#showalltagsbutton').click(function(){
+            var postbounds = map.getBounds();
+            processMapBounds(postbounds);
+            ajaxBoundsPost(boxarray);
+            addMapListeners();
+        })
+    });
+    
+    function geolocate(pos) {
+        center = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+        map.setCenter(center);
+        map.setZoom(13);
+        // obtain bounds of map and push to server
+        var postbounds = map.getBounds();
+        processMapBounds(postbounds);
+        ajaxBoundsPost(boxarray);
+    };
+
+    function geolocateError(error){
+        alert(error.code)
+    }
+    
+    function geocodeAddress() {
+    
+        var paddress = $("#homeuserlocation").val();
+        if (paddress.length === 0) {
+          alert("Please insert a place");
+        }
+        else {
+        geocoder = new google.maps.Geocoder();
+        geocoder.geocode({
+            'address': paddress
+        }, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+                map.setZoom(13);
+                var postbounds = map.getBounds();
+                processMapBounds(postbounds);
+                ajaxBoundsPost(boxarray);
+            }
+            else {
+                alert("Sorry, we didn't recognise this place");
+            }
+        });
+      }
+    };
+    
+    function ajaxBoundsPost(postbounds) {
+    
+        var obj = {
+            mapbounds: boxarray,
+        };
+    
+        $.ajax({
+            url: "/map",
+            type: "POST",
+            contentType: "application/json",
+            processData: false,
+            data: JSON.stringify(obj),
+            success: function(data) {
+                clearOverlays();
+                processMapData(data);
+                mc = new MarkerClusterer(map, markersarray);
+            }
+        });
+    };
+    
+    function create_map() {
+    
+        var mapOptions = {
+            center: new google.maps.LatLng(51.50678771873268, -0.12717489055171427),
+            zoom: 2,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            mapTypeControlOptions: {
+                mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE, "Toner"]
+            },
+            styles: [
+      {
+        "featureType": "landscape.man_made",
+        "stylers": [
+          {  }
+        ]
+      }
+    ],
+            panControl: false,
+            zoomControl: false,
+            scaleControl: false,
+            zoomControl: true,
+            draggableCursor: "default",
+            zoomControlOptions: {
+                style: google.maps.ZoomControlStyle.SMALL
+            },
+            streetViewControl: false
+        };
+    
+        map = new google.maps.Map(document.getElementById("mymap"), mapOptions);
+        map.mapTypes.set("Toner", new google.maps.StamenMapType("toner"));
+        bounds = new google.maps.LatLngBounds();
+    
+      google.maps.event.addListener(map, "idle", function(){
+            clearOverlays();
+            var postbounds = map.getBounds();
+            processMapBounds(postbounds);
+            ajaxBoundsPost(boxarray);
+       })
+    
+        // closing create map function
+    };
+    
+    // function to clear overlays
+    
+    function clearOverlays() {
+    if (mc){
+       mc.clearMarkers();
+    }
+        if (markersarray) {
+            for (i in markersarray) {
+                markersarray[i].setMap(null);
+            }
+            markersarray.length = 0;
+        }
+    };
+    
+    // place marker function used in processMapData function
+    
+    function placeMarker(location, title) {
+        var marker = new google.maps.Marker({
+            position: location,
+            map: map,
+            flat: true
+        });
+    
+        google.maps.event.addListener(marker, 'click', function() {
+            google.maps.event.clearListeners(map, 'idle');
+            infowindow.setContent(title);
+            infowindow.open(map, marker);   
+    
+        });
+        
+        google.maps.event.addListener(infowindow, 'closeclick', function(){
+        addMapListeners();
+    
+        })
+        //map.fitBounds(bounds);
+        markersarray.push(marker);
+    };
+    
+    function addMapListeners(){
+        google.maps.event.addListener(map, "idle", function(){
+            clearOverlays();
+            var postbounds = map.getBounds();
+            processMapBounds(postbounds);
+            ajaxBoundsPost(boxarray);
+       })
+    }
+    
+    function processMapData(maps) {
+    var arrayofarrays = [];
+    if (maps.length > 0) {
+        for (var i = 0, j = maps.length; i < j; i++) {
+            var marker = new google.maps.LatLng(maps[i].waypoints[0].lat, maps[i].waypoints[0].lon);
+            bounds.extend(marker);
+            var url = maps[i]._id;
+            var fullurl = "<span class=\"markerlink\"><a href='/show/" + url + "'>View route</a></span>";
+            var title = "<span class=\"marker\">" + maps[i].title + " - " + fullurl + "</span";
+            placeMarker(marker, title);      
+        };
+      }
+    }
+    
+    // takes bounds and uses internal methods to push map bounds into array to send to server
+    
+    function processMapBounds(postbounds) {
+        boxarray = []; 
+        var sw = postbounds.getSouthWest();
+        var ne = postbounds.getNorthEast();
+        boxarray.push(sw.lat());
+        boxarray.push(sw.lng());
+        boxarray.push(ne.lat());
+        boxarray.push(ne.lng());
+        return boxarray;
+    }
+    
+    function createMapListings(maps, element) {
+     for (var i = 0; i < maps.length; i++) {
+        var url = maps[i]._id;
+        var fullurl = "<li><a href=/show/" + url + ">" + maps[i].title + "</a></li>";
+        $(element).append(fullurl);
+      };
+    };
+</script>

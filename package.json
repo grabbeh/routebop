@@ -1,0 +1,32 @@
+{
+  "name": "Routebop",
+  "dependencies": {
+    "express": "3.0.x",
+    "ejs": ">= 0.8.x",
+    "mongoose": "3.4.0",
+    "connect-flash": "0.1.0",
+    "passport": "0.1.15",
+    "passport-local": "0.1.6",
+    "moment": "1.7.2",
+    "connect-mongo": "0.2.0",
+    "geocoder": "0.1.0",
+    "mongoosastic": "0.0.11",
+    "bcrypt": "~0.7.3",
+    "connect-ensure-login": "~0.1.0",
+    "express-partials": "0.0.6",
+    "express-pjax": "0.0.1",
+    "nano": "~3.3.6"
+  },
+  "subdomain": "routebop",
+  "domains": [
+    "routebop.com",
+    "www.routebop.com"
+  ],
+  "scripts": {
+    "start": "app.js"
+  },
+  "engines": {
+    "node": "v0.8.x"
+  },
+  "version": "0.0.0-176"
+}

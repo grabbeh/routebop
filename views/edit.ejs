@@ -1,0 +1,467 @@
+<!doctype html>
+<head>
+    <%-include head.ejs %>
+
+    <script>
+        var images = [];
+        var map;
+        var geocoder;
+        var places = [];
+        var poly;
+        var markersarray = [];
+        var update_timeout = null;
+        var markerdescs = [];
+        var cpts = [];
+        var infowindow = new google.maps.InfoWindow();
+        
+    </script>
+</head>
+<body>
+    <div id="maincontainer">
+        <%-include header.ejs %>
+        <div id="body">
+            <div id="container">
+                <div class="row">
+                    <% include geoandeditbuttons.ejs %>
+                </div>
+                <div id="map">
+                    <div id="mymap"></div>
+                </div>
+                <p id="output"></p>
+                <div class="row">
+                    <div class="sixcol">
+                        Title
+                        <p><input class="newinputtwo" id="title" type="text" /></p>
+                        <p>Description</p>
+                        <textarea id="description" rows="4" type="text"></textarea>
+                        <p>Tags (separated by a space please)</p>
+                        <input class="newinputtags" id="tags" type="text" />
+                    </div>
+                    <div class="fourcol">
+                        <% include placesandimages.ejs %>
+                    </div>
+                    <div class="twocol last" id="newsubmitbuttons"> <span class="newsubmitbutton" id="user-submit">Submit</span></div>
+                </div>
+                <div id="lengthparent"></div>
+            </div>
+            <div class="clearfooter"></div>
+        </div>
+        <%- include footer.ejs %>
+    </div>
+</body>
+</html>
+<script>
+    $(document).ready(function(){
+        $('#thumb').delegate('span', 'click', function(e){
+                  e.preventDefault();
+                  if (images.length === 1){
+                    images = [];
+                  }
+                  else {
+                  var id = $(this).index();
+                  images.splice(id, 1);
+                }
+                $(this).parent().remove();
+                })
+
+        $('#MyForm').transloadit({
+           wait: true,
+           autoSubmit: false,
+           modal: false,
+           onProgress: function(bytesReceived, bytesExpected){
+             $('#progress').text("Progress: " + (bytesReceived / bytesExpected * 100).toFixed(2)+'%');
+           },
+           onSuccess: function(assembly){
+            $('#progress').text("");
+             var turl = assembly.results.thumb[0].url;
+             var thumburl = turl.replace('http', 'https');
+             var murl = assembly.results[':original'][0].url;
+             var mainurl = murl.replace('http', 'https');
+             $('#thumb').append("<a href=" + mainurl + ">" + "<img src=" + thumburl + "><span>x</span></a>");
+             $('#thumb').find('span').addClass('removeImage');
+             var imgUrls = {};
+             imgUrls['thumburl'] = thumburl;
+             imgUrls['mainurl'] = mainurl;
+             images.push(imgUrls);
+           }
+        });
+
+         $('#fileupload').on('change', function(){
+          $('#photoUpload').click();
+        });
+
+       $('#imageUploadButton').click(function(){
+   
+         if($('#newcontentparent').is(':visible')){
+           $('#imageUploadButton').addClass('bold');
+           $('#imageUploadBox').removeClass('hidden')
+           $('#imageUploadBox').addClass('active');
+           $('#newcontentparent').removeClass('active');
+           $('#placesbutton').removeClass('bold');
+           $('#newcontentparent').addClass('hidden');
+         }
+        })
+   
+       $('#placesbutton').click(function(){
+   
+         if($('#imageUploadBox').is(':visible')){
+           $('#placesbutton').addClass('bold');
+           $('#newcontentparent').removeClass('hidden')
+           $('#newcontentparent').addClass('active');
+           $('#imageUploadBox').removeClass('active');
+           $('#imageUploadButton').removeClass('bold');
+           $('#imageUploadBox').addClass('hidden');
+         }
+   
+       })
+    // loads basic map with set centre
+    create_map();
+    
+    // click function to run geolocation on click
+    
+    $("#geolocate").click(function(){ 
+    navigator.geolocation.getCurrentPosition(geolocate, function(){});
+    });
+    
+    // click function to locate user by reference to submitted location
+    
+    $('#userlocationsubmit').click(function(){
+    geocodeAddress();
+    });
+    
+    // remove all markers and polylines
+    
+    $("#removeall").click(function() {
+        $('#newcontentparent').children().remove().end();
+        clearOverlays();
+        cpts.clear(); 
+        places.splice(0, places.length);
+    });
+    
+    // remove last marker 
+    
+    $("#removelastmarker").click(function(){
+        var lastmarker = _.last(markersarray);
+        lastmarker.setMap(null);
+        markersarray.pop();
+        places.pop();
+        $('#newcontentparent').children().last().remove().end();
+    });
+    
+    // remove last polyline
+    
+    $('#removelastline').click(function(){
+    cpts.pop();  
+    });
+    
+    // click function to submit map by creating 'obj' which incorporates hopefully
+    // clickpoints and markers
+    
+    $('#user-submit').click(function () {
+    
+       var tags = $('#tags').val().split(" ");
+       var newtitle = $('#title').val();
+       if (newtitle.length < 1) {
+        alert('Please insert a title');
+        return;
+      }
+       
+          collectContent();
+          convertWaypoints(cpts.b);
+          convertPlaces(markersarray);
+          var distance = poly.inKm().toFixed(2);
+          var loc = [];
+          var locTwo = [];
+          var x = cpts.b[0].lat();
+          var y = cpts.b[0].lng();
+          loc.push(x);
+          loc.push(y);
+          locTwo.push(y);
+          locTwo.push(x);
+          
+        var obj = {
+            images: images,
+            id: locobj._id,
+            loc: loc,
+            locTwo: locTwo,
+            waypoints: newData,
+            places: places,
+            title: $('#title').val(),
+            description: $('#description').val(),
+            markerdescs: markerdescs,
+            tags: tags,
+            distance: distance
+            };
+    
+    
+        $.ajax({
+            url: "/edit",
+            type: "POST",
+            contentType: "application/json",
+            processData: false,
+            data: JSON.stringify(obj),
+            complete: function (data) {
+                  $('#output').html(data.message);
+                    setTimeout(function() {
+              window.location.href = "/show/" + locobj._id;
+                    }, 2000);
+                }
+            });
+        });
+    });
+    
+    // function to create map on load and add event listeners
+    
+    function create_map() {
+    
+    locobj = <%- obj %>;
+
+    var mapOptions = {
+        center: new google.maps.LatLng(locobj.waypoints[0].lat, locobj.waypoints[0].lon),
+        zoom: 13,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeControlOptions: {
+             mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE, "Toner"]
+        },
+        styles: [
+      {
+        "featureType": "landscape.man_made",
+        "stylers": [
+          { }
+        ]
+      }
+    ],
+        disableDoubleClickZoom: true,
+        panControl: false,
+        zoomControl: false,
+        scaleControl: false,
+        zoomControl: true,
+        draggableCursor: "default",
+        zoomControlOptions: {
+          style: google.maps.ZoomControlStyle.SMALL
+        },
+        streetViewControl: false
+        };
+    
+    var lineSymbol = {
+      path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
+    };
+    
+    var polyOptions = {
+      icons: [{
+        icon: lineSymbol,
+        offset: '0',
+        repeat: '100px'
+      }],
+      strokeOpacity: 0.5,
+      strokeWeight: 3,
+      strokeColor: "#FF0000",
+      editable: true
+    
+      }
+    
+    map = new google.maps.Map(document.getElementById("mymap"), mapOptions);
+    map.mapTypes.set("Toner", new google.maps.StamenMapType("toner"));
+    bounds = new google.maps.LatLngBounds();
+    poly = new google.maps.Polyline(polyOptions);
+    poly.setMap(map);
+    
+    // show map functions
+    // loop through markers and add to map using placeMarker function
+    
+    for ( var i = 0, j = locobj.places.length; i < j; i++ ) {
+        var marker = new google.maps.LatLng(locobj.places[i].lat, locobj.places[i].lon)
+        var descs = locobj.markerdescs[i];
+        bounds.extend(marker);
+        placeMarker(marker, descs);
+    };
+    
+    // loop through waypoints and add to array of waypoints which is then added to map
+    
+    for ( var i = 0, j = locobj.waypoints.length; i < j; i++) {
+            var x = new google.maps.LatLng(locobj.waypoints[i].lat, locobj.waypoints[i].lon);
+            cpts = poly.getPath();
+            cpts.push(x);
+            bounds.extend(x);
+        };
+    
+    addDescriptions();
+    
+    // add title and description to page
+    if (locobj.tags[0] === ""){
+     $('#tags').append("");
+    }
+    else {
+        var tagsString = locobj.tags.join(" ");
+        $('#tags').val(tagsString);
+    }
+    
+    $("#description").val(locobj.description);
+    $("#title").val(locobj.title);
+    $('#lengthparent').append("<p>" + "Distance: " + locobj.distance + " km" + "</p>");
+    
+    if (locobj.images.length) {
+    for (var i = 0; i < locobj.images.length; i++) {
+           var thumburl = locobj.images[i].thumburl;
+           var mainurl = locobj.images[i].mainurl;
+           images.push(locobj.images[i]);
+           $('#thumb').append("<a href=" + mainurl + ">" + "<img src=" + thumburl + "><span>x</span></a>");
+           $('#thumb').find('span').addClass('removeImage');
+           };
+       }
+       else {
+           $('#images').append("<span>" + "Sorry, no photos uploaded for here" + "</span>");
+       }
+
+
+    // adding polyline to map whhch will be updated by below event listener
+    // listener to add line on click
+    
+    google.maps.event.addListener(map, 'click', function(event) {
+    update_timeout = setTimeout(function(){
+        cpts.push(event.latLng)  
+        }, 400);
+    });
+    
+    // listener to add marker on dblclick
+    
+    google.maps.event.addListener(map,'dblclick', function(event) {
+        clearTimeout(update_timeout);
+        placeNewMarker(event.latLng);
+        
+        $('#newcontentparent').append('<p><input class="markerdescription" type="text"></p>')
+      });
+    
+    // listener to add marker on polyline click
+    
+    google.maps.event.addListener(poly, 'click', function(event) {
+        placeNewMarker(event.latLng);
+        $('#newcontentparent').append('<p><input class="markerdescription" type="text"></p>')
+    });
+    
+    map.fitBounds(bounds);
+    // closing create map function
+    };
+    
+    // function to add new markers not to be confused with adding of existing markers from database
+    
+    function placeNewMarker(location) {
+      var marker = new google.maps.Marker({
+          position: location,
+          map: map,
+          draggable: true
+      });
+      markersarray.push(marker);
+    };
+    
+    // function to clear markers
+    
+    function clearOverlays() {
+      if (markersarray) {
+        for (i in markersarray) {
+          markersarray[i].setMap(null);
+        }
+        markersarray.length = 0;
+        
+      }
+    };
+    
+    // function to collect marker descriptions
+    
+    function collectContent() {
+         $('.markerdescription').each(function(i){
+            var content = $(this).val();
+            markerdescs.push(content);
+        })
+    };
+    
+    // function to centre map if user geolocates
+    
+    function geolocate(pos){
+        center = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+        map.setCenter(center);
+    };
+    
+    // geocode function if user inputs location
+    
+    function geocodeAddress(){
+         var paddress = $("#userlocation").val();
+         geocoder = new google.maps.Geocoder();
+         geocoder.geocode({'address': paddress}, function(results, status){
+            if (status == google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+            }
+            else{
+                alert("Geocode was not successful for the following reason: " + status);
+            }
+         });
+     };
+    
+     function placeMarker(location, descriptions) {
+      var marker = new google.maps.Marker({
+          position: location,
+          map: map,
+          flat: true,
+          draggable: true
+        });
+    
+        markersarray.push(marker);
+        
+        google.maps.event.addListener(marker, 'click', function() {
+        infowindow.setContent(descriptions);
+        infowindow.open(map, marker);
+        });   
+    };
+    
+    
+    function addDescriptions() {
+        var mdescs = locobj.markerdescs;
+        for (var i = 0; i < mdescs.length; i++) {
+          $('#newcontentparent').append('<p><input class=\"markerdescription\" type="text\" value=\"' + mdescs[i] + '\"' + '></p>');
+          };
+    };
+    
+    google.maps.LatLng.prototype.kmTo = function(a){ 
+        var e = Math, ra = e.PI/180; 
+        var b = this.lat() * ra, c = a.lat() * ra, d = b - c; 
+        var g = this.lng() * ra - a.lng() * ra; 
+        var f = 2 * e.asin(e.sqrt(e.pow(e.sin(d/2), 2) + e.cos(b) * e.cos 
+    (c) * e.pow(e.sin(g/2), 2))); 
+        return f * 6378.137; 
+      } 
+    
+     google.maps.Polyline.prototype.inKm = function(n){ 
+        var a = this.getPath(n), len = a.getLength(), dist = 0; 
+        for(var i=0; i<len-1; i++){ 
+          dist += a.getAt(i).kmTo(a.getAt(i+1)); 
+        } 
+        return dist; 
+      } 
+    
+    function convertWaypoints(arrayofwaypoints) {
+    
+        newData = [];
+        for(var i = 0; i < arrayofwaypoints.length; i++) {
+            var obj = new Object();
+            obj['lat'] = arrayofwaypoints[i].lat();
+            obj['lon'] = arrayofwaypoints[i].lng();
+            newData.push(obj);
+        }
+        return newData;     
+    }
+    
+    function convertPlaces(arrayofplaces) {
+    
+      places = [];
+      for (var i = 0; i < arrayofplaces.length; i++) {
+        var placeobj = {};
+        var latlngobject = arrayofplaces[i].getPosition();
+        placeobj['lat'] = latlngobject.lat();
+        placeobj['lon'] = latlngobject.lng();
+        places.push(placeobj);
+    
+      };
+      return places;
+    }
+    
+</script>

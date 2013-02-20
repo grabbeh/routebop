@@ -1,0 +1,39 @@
+<!doctype html>
+<head>
+<%-include head.ejs %>
+
+</head>
+    <body>
+       
+<div id="maincontainer">
+    <%include header.ejs %>
+    <div id="body"> 
+      <div id="container">
+       <div class="row"> 
+           <div class="twelvecol">
+                    <div class="form"><b>Login</b></div>
+                    <form class="loginform" method=post action="/login"><table border=0><tr><td>
+                      Username</td>
+                      <td><input class="form" type=text name="username" size=20 autocorrect="off" autocapitalise="off" </td></tr><tr><td>
+                      Password</td>
+                      <td><input class="form" type=password name="password" size=20></td></tr>
+                      </table>
+                      <input class="formbutton" type=submit value="login">
+                    </form>
+
+                    <div class="form"><b>Create Account</b></div>
+                    <form class="loginform" method=post action="/signup"><table border=0><tr><td>
+                      Username</td><td><input class="form" type=text name="username" size=20></td></tr><tr><td>
+                      Password</td><td><input class="form" type=password name="password" size=20></td></tr></table>
+                      <input class="formbutton" type=submit value="create account">
+                      <br><br>
+                    </form>
+          </div> 
+       </div>
+      </div>
+  <div class="clearfooter"></div> 
+</div>
+     <%- include footer.ejs %>
+</div>
+</body>
+</html>

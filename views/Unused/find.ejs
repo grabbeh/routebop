@@ -1,0 +1,52 @@
+<!doctype html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+
+<head>
+<title>Wanders</title>
+
+    <!-- Mobile Specific Metas
+  ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- CSS
+  ================================================== -->
+    
+    <link rel="stylesheet" href="/stylesheets/style.css">
+
+    <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Favicons
+    ================================================== -->
+    <link rel="shortcut icon" href="images/favicon.ico">
+
+<!--jQuery -->
+<script src="http://code.jquery.com/jquery-latest.js" type="text/javascript"></script>
+
+
+</head>
+    <body>
+       <div id="maincontainer">
+<%-include header.ejs %>
+    <div id="body"> 
+      <div id="container">
+       <div class="row"> 
+           <div class="sixcol" id="button"><p id="uploadbutton"><a class="fill-div" href="/list">List</a></p><p class="textbox">Browse a list of routes in list form.</p></div>
+           <div class="sixcol last" id="button"><p id="newbutton"><a class="fill-div" href="/map">Map</a></p> <p class="textbox">Display a marker for each path on a moveable map.</p></div>
+
+       </div>
+       </div>
+      
+  <div class="clearfooter"></div> 
+</div>
+    <div id="footer"> 
+
+  </div>
+</div>
+</body>
+</html>
+

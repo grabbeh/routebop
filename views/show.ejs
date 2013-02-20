@@ -1,0 +1,210 @@
+<!doctype html>
+<head>
+    <%- include head.ejs %>
+
+</head>
+<body>
+    <div id="maincontainer">
+        <%-include header.ejs %>
+        <div id="body">
+            <div id="container">
+                <div class="row">
+                    <div class="sixcol">
+                        <%- include showhead.ejs %>
+                    </div>
+                    <div class="sixcol last">
+                        <% include showedit.ejs %>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="ninecol">
+                        <div id="map">
+                            <div id="mymap"></div>
+                        </div>
+                    </div>
+                    <div class="threecol last">
+                        <div style="margin-top: 10px"><b>Places</b></div>
+                        <ul id="desclist" class="showlist"></ul>
+                    </div>
+                </div>
+                <%-include favourite.ejs %>
+                <div class="row">
+                    <div class="fourcol">
+                        <div id="showDescription"><b>Description</b></div>
+                        <div id="description"></div>
+                        <div id="showtags"><b>Tags</b></div>
+                        <ul id="maptags"</ul>
+                    </div>
+                    <div class="fourcol last">
+                        <div id="imagesHeader"><b>Images</b></div>
+                        <div id="images"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfooter"></div>
+        </div>
+        <%- include footer.ejs %>
+    </div>
+</body>
+</html>
+<script>
+    var map;
+    var arrayofwaypoints = [];
+    var infowindow = new google.maps.InfoWindow();
+    var locobj = <%- obj %>;
+    
+    function favouriteAjaxPost() {
+        var obj = {
+            favourite: locobj._id,
+            plusone: locobj.favourited + 1
+        };
+    
+        $.ajax({
+            url: "/show",
+            type: "POST",
+            contentType: "application/json",
+            processData: false,
+            data: JSON.stringify(obj),
+            complete: function(data) {
+                $('#result').append().html(data.responseText);    
+            }
+        });
+    };
+    
+    function placeMarker(location, descriptions) {
+      var newmarker = new google.maps.Marker({
+          position: location,
+          map: map,
+          flat: true
+          });
+
+        google.maps.event.addListener(newmarker, 'click', function() {
+        infowindow.setContent(descriptions)
+        infowindow.open(map, newmarker);
+        }); 
+    
+        $("<li>").html(descriptions + "</li>").click(function(){
+            infowindow.setContent(descriptions);
+            infowindow.open(map, newmarker); 
+        }).appendTo("#desclist");
+    };
+    
+    function create_blankmap(){
+    
+    var mapOptions = {
+        center: new google.maps.LatLng(locobj.waypoints[0].lat, locobj.waypoints[0].lon),
+        zoom: 13,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeControlOptions: {
+             mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE, "Toner"]
+        },
+        styles: [
+      {
+        "featureType": "landscape.man_made",
+        "stylers": [
+          {  }
+        ]
+      }
+    ],
+        panControl: false,
+        zoomControl: false,
+        scaleControl: false,
+        zoomControl: true,
+        zoomControlOptions: {
+          style: google.maps.ZoomControlStyle.SMALL
+        },
+        streetViewControl: true
+        };
+       
+    map = new google.maps.Map(document.getElementById("mymap"), mapOptions);
+    map.mapTypes.set("Toner", new google.maps.StamenMapType("toner"));
+    bounds = new google.maps.LatLngBounds();
+    
+    // loop through markers and add to map
+    
+    for ( var i = 0, j = locobj.places.length; i < j; i++ ) {
+      var marker = new google.maps.LatLng(locobj.places[i].lat, locobj.places[i].lon);
+        bounds.extend(marker);
+        var descs = locobj.markerdescs[i];
+        placeMarker(marker, descs);
+    };
+    
+    // loop through waypoints and add to array of waypoints which is then added to map
+    
+    for ( var i = 0, j = locobj.waypoints.length; i < j; i++) {
+        var x = new google.maps.LatLng(locobj.waypoints[i].lat, locobj.waypoints[i].lon);
+        arrayofwaypoints.push(x);
+            bounds.extend(x);
+      };
+    
+    // add polyline to map
+    var lineSymbol = {
+      path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+    };
+    
+    
+    var route = new google.maps.Polyline({
+        path: arrayofwaypoints,
+      strokeOpacity: 0.7,
+      strokeWeight: 3,
+      strokeColor: '#FF0000',
+        icons: [{
+        icon: lineSymbol,
+        offset: '0',
+        repeat: '150px'
+      }],
+      });
+    route.setMap(map);
+    map.fitBounds(bounds);
+
+    if (locobj.tags[0] === ""){
+      $('#showtags').remove();
+      $('#maptags').remove();
+    }
+    else {
+    for ( var i = 0, j = locobj.tags.length; i < j; i++ ) {
+        var singletag = locobj.tags[i].trim();
+        $('#maptags').append("<li><a href=/tags/" + singletag + ">" + singletag + "</a>" + "</li>");
+    };
+    }
+    if (locobj.description){
+    $("#description").append("<p>" + locobj.description + "<p>");
+}
+else {
+    $('#showDescription').remove();
+    $('#description').remove();
+}
+
+
+    $('#distance').append("<p><b>" + "Distance " + "</b>" + locobj.distance + " km" + "</b></p>");  
+    $("#titleblock").append("<div>" + locobj.title + "</div>" );
+    $("#subtitleblock").append("<div> submitted by " + "<a href=/user/" + locobj.author + ">" + locobj.author + "</a>" + " on " + locobj.formatteddate + "</div>").addClass("subtitle");
+    $('#favouritedblock').append("<div>Favourited: " + locobj.favourited + " times</div>").addClass("subtitle");
+    
+if (locobj.images.length) {
+
+    for (var i = 0; i < locobj.images.length; i++) {
+           var thumburl = locobj.images[i].thumburl;
+           var mainurl = locobj.images[i].mainurl;
+       
+           $('#images').append("<span>" + "<a href=" + mainurl + ">" + "<img src=" + thumburl + "></a></span>")
+           };
+       }
+       else {
+         $('#imagesHeader').remove();
+           $('#images').remove();
+       }
+
+    // end of create blankmap function
+    
+    };
+    
+    $(document).ready(function () {
+    create_blankmap();
+    
+    $('#favourite').click(function() { 
+        favouriteAjaxPost();
+        });
+    });
+    
+</script>
