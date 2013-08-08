@@ -67,7 +67,6 @@ app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(partials());
-  app.use(pjax());
   app.use(express.bodyParser());
   app.use(express.cookieParser());
   app.use(express.methodOverride());
