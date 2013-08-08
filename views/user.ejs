@@ -49,7 +49,7 @@
             </div>
 
             <div class="row">
-                <div class="ninecol" id="showalltagsbutton">
+                <div class="ninecol" id="showalltagsbuttonuser">
                     <b>Show all tags</b>
                 </div>
             </div>
@@ -66,11 +66,14 @@ var map;
 var markersarray = [];
 var mc;
 var publicUser = <%- publicUser %>;
-
+var maps = <%- userMaps %>
 $(document).ready(function() {
 
     // initial create map function to push map bounds, add event listeners - for drag on push.
     create_map();
+    processMapData(maps);
+    mc = new MarkerClusterer(map, markersarray);
+    map.fitBounds(bounds);
     $('#userinfo').append(publicUser.info);
 
     $('#maptags').delegate('li', 'click', function(){
@@ -83,7 +86,7 @@ $(document).ready(function() {
     
         })
     
-        $('#showalltagsbutton').click(function(){
+        $('#showalltagsbuttonuser').click(function(){
             var postbounds = map.getBounds();
             processMapBounds(postbounds);
             ajaxBoundsPost(boxarray);
@@ -95,6 +98,7 @@ $(document).ready(function() {
 
 function create_map() {
 var maps = <%- userMaps %>
+console.log(maps);
 var mapOptions = {
             center: new google.maps.LatLng(maps[0].waypoints[0].lat, maps[0].waypoints[0].lon),
             zoom: 13,
@@ -127,13 +131,7 @@ var mapOptions = {
         map.mapTypes.set("Toner", new google.maps.StamenMapType("toner"));
         bounds = new google.maps.LatLngBounds();
     
-      google.maps.event.addListener(map, "idle", function(){
-            clearOverlays();
-            var postbounds = map.getBounds();
-            processMapBounds(postbounds);
-            ajaxBoundsPost(boxarray);
-       })
-        // closing create map function
+       // closing create map function
     };
     
     // function to clear overlays
@@ -222,7 +220,6 @@ var mapOptions = {
         
         var flatarray = _.flatten(tagarrays);
         var reducedarray = _.uniq(flatarray);
-       
     
         for (var i = 0, j = reducedarray.length; i < j; i++) {
             var maptag = reducedarray[i].trim();

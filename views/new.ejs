@@ -189,13 +189,13 @@
          convertPlaces(markersarray);
          var distance = poly.inKm().toFixed(2);
          var loc = [];
-        var locTwo = [];
+         var locTwo = [];
          var x = cpts.b[0].lat();
          var y = cpts.b[0].lng();
          loc.push(x);
          loc.push(y);
-        locTwo.push(y);
-        locTwo.push(x);
+         locTwo.push(y);
+         locTwo.push(x);
     
          var obj = {
            images: images,
@@ -271,7 +271,6 @@
          editable: true
          }
    
-   
    poly = new google.maps.Polyline(polyOptions);
    poly.setMap(map);
    
@@ -296,7 +295,6 @@
    
    google.maps.event.addListener(poly, 'click', function(event) {
        placeMarker(event.latLng);
-       
        $('#newcontentparent').append('<p><input class="markerdescription" type="text"></p>')
    });
    // closing create map function

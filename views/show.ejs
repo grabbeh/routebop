@@ -134,7 +134,7 @@
     for ( var i = 0, j = locobj.waypoints.length; i < j; i++) {
         var x = new google.maps.LatLng(locobj.waypoints[i].lat, locobj.waypoints[i].lon);
         arrayofwaypoints.push(x);
-            bounds.extend(x);
+        bounds.extend(x);
       };
     
     // add polyline to map
@@ -142,12 +142,11 @@
       path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
     };
     
-    
     var route = new google.maps.Polyline({
         path: arrayofwaypoints,
-      strokeOpacity: 0.7,
-      strokeWeight: 3,
-      strokeColor: '#FF0000',
+        strokeOpacity: 0.7,
+        strokeWeight: 3,
+        strokeColor: '#FF0000',
         icons: [{
         icon: lineSymbol,
         offset: '0',
