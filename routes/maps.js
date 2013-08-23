@@ -4,12 +4,6 @@ var moment = require('moment');
 var Map = require('../models/map.js');
 var User = require('../models/user.js');
 
-// tour
-
-exports.tour = function(req, res) {
-  res.render('tour', {layout: false, user: req.user});
-};
-
 // get route for home page
 
 exports.home = function(req, res){
@@ -18,7 +12,7 @@ exports.home = function(req, res){
       Map.find({},{}, {limit: 5, sort:{date: -1}}, function(err, datemaps) {
         var jdatemaps = JSON.stringify(datemaps);
           
-          res.render('home', {layout: false, user: req.user, maps: jmaps, datemaps: jdatemaps})
+          res.render('home', {user: req.user, maps: jmaps, datemaps: jdatemaps})
           
      })
   });
@@ -42,7 +36,7 @@ else {
   var lng = req.query.lng;
 }
 
-	res.render('new',{layout: false, user: req.user, lat: lat, lng: lng})
+	res.render('new',{user: req.user, lat: lat, lng: lng})
 };
 
 // post map to database by taking req.body data and creating new schema
@@ -94,7 +88,7 @@ exports.getmap = function(req, res) {
   var lat = 51.50678771873268;
   var lng = -0.12717489055171427;
 
-  res.render('map', {layout: false, user: req.user, lat: lat, lng: lng});  
+  res.render('map', {user: req.user, lat: lat, lng: lng});  
 };
 
 // provide map data to /map route to show markers on map following /POST request
@@ -175,7 +169,7 @@ exports.show = function(req, res) {
             break;
 
             default:
-              res.render('show', {layout: false, obj: jmap, user: req.user, favourite: fav, mapid: mapid, edit: edit})
+              res.render('show', {obj: jmap, user: req.user, favourite: fav, mapid: mapid, edit: edit})
             } 
            
          })
@@ -240,7 +234,7 @@ exports.edit = function(req, res) {
           if (req.user._id === map.author) {
 
           var jmap = JSON.stringify(map);
-          res.render('edit', {layout: false, obj: jmap, user: req.user});
+          res.render('edit', {obj: jmap, user: req.user});
         }
         else {
           res.redirect('/account');
@@ -292,7 +286,7 @@ exports.findfavouritesbyauthor = function (req, res) {
       .exec(function(err, user) {
          if (!err) {
           var clientUser = JSON.stringify(user);
-          res.render('favourites', {layout: false, clientUser: clientUser, author: author, user: req.user});
+          res.render('favourites', {clientUser: clientUser, author: author, user: req.user});
         }
       })
 }
@@ -305,7 +299,7 @@ exports.findmapsbyauthor = function(req, res) {
               }
         else  {
                 var jmaps = JSON.stringify(maps);
-                res.render('submitted', {layout: false, maps: jmaps, author: user, user: req.user });
+                res.render('submitted', {maps: jmaps, author: user, user: req.user });
               }    
     })
 };
@@ -316,7 +310,7 @@ exports.tagged = function(req, res) {
    Map.find({ tags: req.params.id }, function(err, maps) {
    
    var tmaps = JSON.stringify(maps);
-   res.render('tagged', {layout: false, user: req.user, maps: tmaps, tag: req.params.id });
+   res.render('tagged', {user: req.user, maps: tmaps, tag: req.params.id });
    }) 
 }
 

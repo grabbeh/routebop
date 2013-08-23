@@ -3,11 +3,8 @@ var express = require('express')
 , tls = require("tls")
 , fs = require("fs")
 , bcrypt = require("bcrypt")
-, partials = require('express-partials')
 , MongoStore = require("connect-mongo")(express)
 , passport = require('passport')
-, flash = require('connect-flash')
-, util = require('util')
 , LocalStrategy = require('passport-local').Strategy
 , routes = require('./routes/maps')
 , user = require('./routes/user')
@@ -65,12 +62,10 @@ passport.use(new LocalStrategy(
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
-  app.use(partials());
   app.use(express.bodyParser());
   app.use(express.cookieParser());
   app.use(express.methodOverride());
   app.use(express.session({ secret: 'keyboard cat'}));				  
-  app.use(flash());
   app.use(passport.initialize());
   app.use(passport.session({ secret: 'keyboard cat', 
   store: new MongoStore({url: 'mongodb://' + db.details.user + ':' + db.details.pass + '@' + db.details.host + ':' + db.details.port + '/' + db.details.name
@@ -87,8 +82,6 @@ app.get('/test', routes.test);
 app.get('/transloadit', transloadit.transloadit);
 
 app.post('/postupload', transloadit.postupload);
-
-app.get('/tour', routes.tour);
 
 app.get('/', routes.home);
 
