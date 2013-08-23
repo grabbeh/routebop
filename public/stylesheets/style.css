@@ -171,7 +171,7 @@ padding-right: 20px;
 /* HOME PAGE BUTTONS */
 
 .markerlink:hover {
-    background-color: #F0F0F0;
+    background-color: #E8E8E8;
 }
 
 #searchbox {
@@ -260,7 +260,7 @@ margin-right: 10px;
  }
 
 #lineblock {
-    border-color: #F0F0F0;
+    border-color: #E8E8E8;
     border-style: solid;
     border-width: 0px 0px 2px 0px;
     padding: 10px 0px 10px 0px;
@@ -268,7 +268,7 @@ margin-right: 10px;
 }
 
 #lineblocktwo {
-    border-color: #F0F0F0;
+    border-color: #E8E8E8;
     border-style: solid;
     border-width: 0px 0px 2px 0px;
     padding: 10px 0px 10px 0px;
@@ -309,12 +309,12 @@ div#usermap {
   padding: 0px;
   
 }
-.homelist li:hover { background:#F0F0F0;   }
-.homelist li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #F0F0F0;}
+.homelist li:hover { background:#E8E8E8;   }
+.homelist li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #E8E8E8;}
 
 .showlist { width:100%; list-style:none; padding:0; margin-top: 10px; margin-bottom:0px;}
-.showlist li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #F0F0F0;}
-.showlist li:hover { background:#F0F0F0; cursor: pointer;}
+.showlist li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #E8E8E8;}
+.showlist li:hover { background:#E8E8E8; cursor: pointer;}
 
 /* MAP SCREEN */
 
@@ -327,7 +327,7 @@ div#usermap {
 
 #maptags li {
     float: left;
-    background: #F0F0F0;
+    background: #E8E8E8;
     padding: 10px;
     margin: 5px 10px 5px 0;
 }
@@ -638,12 +638,12 @@ color: #000000;
 }
 
 .list { width:100%; list-style:none; padding:0px; margin-top: 10px; margin-bottom:0px;}
-.list li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #F0F0F0;}
-.list li:hover { background:#F0F0F0; }
+.list li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #E8E8E8;}
+.list li:hover { background:#E8E8E8; }
 
 .maplist { width:100%; list-style:none; padding:0px 0px 20px 0px; margin-top: 10px; margin-bottom:0px;}
-.maplist li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #F0F0F0;}
-.maplist li:hover { background:#F0F0F0; 
+.maplist li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #E8E8E8;}
+.maplist li:hover { background:#E8E8E8; 
 }
 
 #show-route-list-header {
