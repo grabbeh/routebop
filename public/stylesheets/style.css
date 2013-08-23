@@ -64,7 +64,7 @@ a:active {text-decoration: none;}
 }
 
 a.highlight {
-    background-color: #FFE880;
+    background-color: #E8E8E8;
 }
 
 #maincontainer {
@@ -179,7 +179,6 @@ padding-right: 20px;
     font-size: 32px;
 }
 
-/*#homebutton:hover { background-color: #FFE880; }*/
 .homebutton {
     
     height: 120px;  
@@ -193,12 +192,6 @@ padding-right: 20px;
 
 #add { background: #ec56a5;}
 #add:hover{ background: #f49bca;}
-
-#tour {background: #ec9d56;}
-#tour:hover{  background: #f1b884 ;}
-
-#login { background: #56a5ec;}
-#login:hover{ background: #9bcaf4;}
 
 .htext {
     margin-top: 25px;
@@ -667,58 +660,6 @@ color: #000000;
     padding: 0px 0px 10px 0px;
 }
 
-/* BLOG */
-
-
-.titletext {
- text-align: center;
-}
-
-#blogsubtitle {
-    padding-bottom: 15px;
-}
-
-
-input.button {
-    height: 35px;
-    font-size: 16px;
-    margin-bottom: 0px;
-    padding-right: 10px;
-    padding-left: 10px;
-}
-
-input.styled {
-    height: 30px;
-    font-size: 16px;
-    margin: 0px 0px 15px 0px;
-    padding: 0px 10px 0px 6px;
-    width: 100%;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-h1 {
-    padding: 0px;
-    margin: 20px 0px 10px 0px;
-}
-
-h2 {
-    padding:0px;
-    margin: 0px 0px 0px 0px;
-}
-
-#blogsubtitle {
-    padding-bottom: 15px;
-}
-
-#blogdate {
-    margin-top: 5px;
-}
-
-#blogtext {
-    line-height: 25px;
-}
 
 
 /* COLUMNS */
@@ -797,16 +738,6 @@ width: 56.75%;
 width: 65.4%;
 }
 
-.row .blogcol {
-    width: 750px;
-    max-width: 100%;
-    margin:0px auto;
-    text-align:left;
-    padding:15px;
-    border:1px dashed #333;
-    background-color: #FFFFFF;
-}
-
 .row .ninecol {
 width: 74.05%;
 }
@@ -875,15 +806,6 @@ margin-right: 0px;
     padding-right: 0px;
     }
 
-    .row .blogcol {
-    width: auto;
-    float: none;
-    margin-left: 0px;
-    margin-right: 0px;
-    padding: 20px;
-
-    }
-
     .row .newthreecol {
     width: auto;
     float: none;
@@ -930,9 +852,6 @@ margin-right: 0px;
     padding-right: 0px;
 }
 
-#disqus {
-	margin-top: 10px 
-}
 /* HOME SCREEN CHANGES*/
 
 #hometitle {
@@ -1051,6 +970,3 @@ div#editmapbox {
     margin-top: 20px;
 }
 
-#show-route-list-header {
-    font-weight: bold;
-}​

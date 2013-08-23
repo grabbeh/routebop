@@ -5,6 +5,7 @@ var express = require('express')
 , bcrypt = require("bcrypt")
 , MongoStore = require("connect-mongo")(express)
 , passport = require('passport')
+, flash = require('connect-flash')
 , LocalStrategy = require('passport-local').Strategy
 , routes = require('./routes/maps')
 , user = require('./routes/user')
@@ -65,7 +66,8 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.cookieParser());
   app.use(express.methodOverride());
-  app.use(express.session({ secret: 'keyboard cat'}));				  
+  app.use(express.session({ secret: 'keyboard cat'}));
+  app.use(flash());				  
   app.use(passport.initialize());
   app.use(passport.session({ secret: 'keyboard cat', 
   store: new MongoStore({url: 'mongodb://' + db.details.user + ':' + db.details.pass + '@' + db.details.host + ':' + db.details.port + '/' + db.details.name
