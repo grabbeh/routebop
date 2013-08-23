@@ -23,40 +23,29 @@
     <div class="row">
             
           <div class="ninecol">
-          <div id="usermap">
-                <div id="mymap"></div>
+              <div id="usermap">
+                    <div id="mymap"></div>
+              </div>
+
+              <div>
+                    <div id="maptaglist"><b>Filter by tags</b></div>
+                       <ul id="maptags"></ul>
+              </div>
+
+              <div id="showalltagsbutton" class="hide-element">Show all tags</div>
+
           </div>
           
-          </div>
           <div class="threecol last">
-                <div style="margin-top: 10px"><b><%= userId %>'s Routes</b></div><ul id="showroutelist" class="list"></ul>
-          </div>
+                <div id="show-route-list-header">Routes</div>
+                    <ul id="showroutelist" class="maplist"></ul>
+                </div>
       </div>
 
-        <div class="row">
-			
-			<div class="twelvecol"><div id="userinfo"></div></div>
-			
-                <div class="ninecol">
-                    <div id="maptaglist"><b>Filter by tags</b></div>
-                    <ul id="maptags" class="taglist">
-                    
-                </ul>
-                </div>
-			
-			<div class="threecol last"></div>	
-		
-            </div>
-
-            <div class="row">
-                <div class="ninecol" id="showalltagsbuttonuser">
-                    <b>Show all tags</b>
-                </div>
-            </div>
       </div>
     <div class="clearfooter"></div> 
 </div>
-    <%- include footer.ejs %>
+    <div id="footer"></div>
 </div>
 </body>
 </html>

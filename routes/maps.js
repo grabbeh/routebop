@@ -320,4 +320,9 @@ exports.tagged = function(req, res) {
    }) 
 }
 
+exports.test = function(req, res){
+  res.render('test', {user: req.user})
+
+}
+
 

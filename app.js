@@ -11,8 +11,7 @@ var express = require('express')
 , LocalStrategy = require('passport-local').Strategy
 , routes = require('./routes/maps')
 , user = require('./routes/user')
-, blog = require('./routes/blog')
-, test = require('./routes/test')
+, transloadit = require('./routes/transloadit')
 , geocoder = require('./routes/geocoder')
 , mongoose = require('mongoose')
 , moment = require('moment')
@@ -83,26 +82,11 @@ app.configure(function(){
 });
 
 // Routes
+app.get('/test', routes.test);
 
-app.get('/transloadit', test.transloadit);
+app.get('/transloadit', transloadit.transloadit);
 
-app.post('/postupload', test.postupload);
-
-app.get('/blog', blog.showAll);
-
-app.get('/blog/new', login.ensureLoggedIn('/login'), blog.newBlog);
-
-app.post('/blog/new', blog.post);
-
-app.get('/blog/admin', login.ensureLoggedIn('/login'), blog.admin);
-
-app.get('/blog/edit/:id?', blog.edit);
-
-app.post('/blog/edit/:id?', blog.postEdit);
-
-app.get('/blog/:id?', blog.showOne);
-
-app.get('/blog/delete/:id?', blog.delete);
+app.post('/postupload', transloadit.postupload);
 
 app.get('/tour', routes.tour);
 
