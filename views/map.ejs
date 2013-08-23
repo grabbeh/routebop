@@ -23,12 +23,10 @@
                             </ul>
                         </div>
 
-                        <div id="showalltagsbutton">
-                            
-                        </div>
+                        <div id="showalltagsbutton" class="hide-element">Show all tags</div>
                     </div>
                     <div class="threecol last">
-                        <div style="margin-top: 10px"><b>Routes</b></div>
+                        <div id="show-route-list-header">Routes</div>
                         <ul id="showroutelist" class="maplist"></ul>
                     </div>
                 </div>
@@ -72,7 +70,7 @@
             ajaxTagPost(boxarray, submittag);
             google.maps.event.clearListeners(map, 'idle');
             addTagListeners();
-            $('#showalltagsbutton').text("Show all tags").addClass('boldtext');
+            $('#showalltagsbutton').removeClass('hide-element');
     
         })
     
@@ -82,7 +80,7 @@
             ajaxBoundsPost(boxarray);
             google.maps.event.clearListeners(map, 'idle');
             addMapListeners();
-            $('#showalltagsbutton').text("");
+            $('#showalltagsbutton').addClass('hide-element');
         })
     });
     
@@ -313,8 +311,8 @@
             var marker = new google.maps.LatLng(maps[i].waypoints[0].lat, maps[i].waypoints[0].lon);
             bounds.extend(marker);
             var url = maps[i]._id;
-            var fullurl = "<a href='/show/" + url + "'>View Route</a></div>";
-            var title = maps[i].title + " - " + fullurl + "";
+            var fullurl = "<span class=\"markerlink\"><a href='/show/" + url + "'>View route</a></span>";
+            var title = "<span class=\"marker\">" + maps[i].title + " - " + fullurl + "</span";
             placeMarker(marker, title); 
             
         };

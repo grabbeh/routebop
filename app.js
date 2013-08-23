@@ -162,14 +162,4 @@ app.get('*', function(req, res){
 });
 
 app.listen(3000);
-/*
-var options = {
-  key: fs.readFileSync('server-key.pem'),
-  cert: [fs.readFileSync('intermediatecert.pem'), fs.readFileSync('finalcert.pem')]
-};
 
-tls.createServer(options, function (s) {
-  s.write("welcome!\n");
-  s.pipe(s);
-})
-*/

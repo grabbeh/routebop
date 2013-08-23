@@ -4,12 +4,15 @@ body {
     height:100%;
     margin: 0px auto; 
     padding:0; 
-    font-family: 'rooney-web', Arial;
-    background:#fafafa;
+    font-family: "jaf-facitweb", Arial;
 }
 
 .boldtext {
  font-weight: bold;
+}
+
+.hide-element {
+    display: none;
 }
 
 .homerow {
@@ -36,13 +39,13 @@ overflow: hidden;
 }
 
 input {
-font-family: 'rooney-web', Arial;
+font-family: "jaf-facitweb", Arial;
 }
 
 textarea {
     max-width: 100%;
     width: 100%;
-    font-family: 'rooney-web', Arial;
+    font-family: "jaf-facitweb", Arial;
     font-size: 16px;
     padding: 10px;
     margin: 0px;
@@ -55,7 +58,6 @@ a {color: #000000;}
 a:link {text-decoration: none;}
 a:visited {text-decoration: none;}
 a:active {text-decoration: none;}
-/*a:hover {text-decoration: underline;}*/
 
 .underline a:hover {
     text-decoration: underline;
@@ -169,7 +171,7 @@ padding-right: 20px;
 /* HOME PAGE BUTTONS */
 
 .markerlink:hover {
-    background-color: #FFE880;
+    background-color: #F0F0F0;
 }
 
 #searchbox {
@@ -199,7 +201,7 @@ padding-right: 20px;
 #login:hover{ background: #9bcaf4;}
 
 .htext {
-    margin-top: 40px;
+    margin-top: 25px;
     font-size: 16px;
     text-align: left;
     line-height: 30px;
@@ -245,7 +247,6 @@ cursor:pointer;
 
 #homegeolocate:hover {
     cursor:pointer; 
-    cursor:hand;
     background:#FFE880;
  }
 
@@ -255,19 +256,20 @@ margin-right: 10px;
 
 #geolocate:hover {
     cursor:pointer; 
-    cursor:hand;
     background:#FFE880;
  }
 
 #lineblock {
-    border-style: dashed;
+    border-color: #F0F0F0;
+    border-style: solid;
     border-width: 0px 0px 2px 0px;
     padding: 10px 0px 10px 0px;
     margin: 20px 0px 20px 0px;
 }
 
 #lineblocktwo {
-    border-style: dashed;
+    border-color: #F0F0F0;
+    border-style: solid;
     border-width: 0px 0px 2px 0px;
     padding: 10px 0px 10px 0px;
     margin: 20px 0px 20px 0px;
@@ -307,32 +309,30 @@ div#usermap {
   padding: 0px;
   
 }
-.homelist li:hover { background:#FFE880;   }
-.homelist li { padding:5px 0px 5px 0px; border-bottom: dashed; border-width: 1px;}
+.homelist li:hover { background:#F0F0F0;   }
+.homelist li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #F0F0F0;}
 
 .showlist { width:100%; list-style:none; padding:0; margin-top: 10px; margin-bottom:0px;}
-.showlist li { padding:5px 0px 5px 0px; border-bottom: dashed; border-width: 1px;}
-.showlist li:hover { background:#FFE880; cursor: pointer;}
+.showlist li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #F0F0F0;}
+.showlist li:hover { background:#F0F0F0; cursor: pointer;}
 
 /* MAP SCREEN */
 
 #maptags {
     list-style-type:none;
-    padding-left: 0px; 
-    padding-top: 10px;
-    padding-bottom: 15px;
-    margin-top: 0px;
+    padding: 10px 0 5px 0;
+    margin: 0;
+    overflow: hidden;
 }
 
 #maptags li {
     float: left;
-    padding-right: 10px;
-    padding-top: 0px;
-    margin-top: 0px;
-    margin-bottom: 0px;
+    background: #F0F0F0;
+    padding: 10px;
+    margin: 5px 10px 5px 0;
 }
 
-#maptags li:hover { background:#FFE880; cursor:pointer; }
+#maptags li:hover { cursor:pointer; }
 
 div#maptaglist {
     padding-top:10px;
@@ -348,19 +348,16 @@ div#maptaglist {
 }
 
 #showalltagsbutton {
-    padding-top: 0px;
     padding-bottom: 15px;
     cursor:pointer; 
-    cursor:hand;
+    font-weight: bold;
 }
 
 #showalltagsbuttonuser {
-    padding-top: 15px;
+    padding-top: 10px;
     padding-bottom: 15px;
     cursor:pointer; 
-    cursor:hand;
 }
-
 /* LOGIN FORM */
 
 input.form {
@@ -516,6 +513,10 @@ input.newinputtags {
     box-sizing: border-box;
 }
 
+.marker:hover {
+    cursor: pointer;
+}
+
 input.markerdescription {
     height: 30px;
     font-size: 16px;
@@ -637,12 +638,17 @@ color: #000000;
 }
 
 .list { width:100%; list-style:none; padding:0px; margin-top: 10px; margin-bottom:0px;}
-.list li { padding:5px 0px 5px 0px; border-bottom: dashed; border-width: 1px;}
-.list li:hover { background:#FFE880; }
+.list li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #F0F0F0;}
+.list li:hover { background:#F0F0F0; }
 
 .maplist { width:100%; list-style:none; padding:0px 0px 20px 0px; margin-top: 10px; margin-bottom:0px;}
-.maplist li { padding:5px 0px 5px 0px; border-bottom: dashed; border-width: 1px;}
-.maplist li:hover { background:#FFE880; }
+.maplist li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #F0F0F0;}
+.maplist li:hover { background:#F0F0F0; 
+}
+
+#show-route-list-header {
+  font-weight: bold;
+}
 
 /* ACCOUNT PAGE */
 
@@ -1020,19 +1026,6 @@ margin-right: 0px;
     margin-bottom: 0px;
   }
 
-#lineblock {
-    border-style: dashed;
-    border-width: 0px 0px 2px 0px;
-    margin: 8px 0px 20px 0px;
-}
-
-#lineblocktwo {
-    border-style: dashed;
-    border-width: 0px 0px 2px 0px;
-    margin: 0px 0px 20px 0px;
-    padding: 0px;
-}
-
 .clearfooter {
 margin-top: 0px;
 height: 75px;
@@ -1044,6 +1037,7 @@ clear: both;
 }
 
 /* edit map box used on 'show' screen */
+
 div#editmapbox {
     font-size: 15px;
     padding: 0px;
@@ -1056,4 +1050,7 @@ div#editmapbox {
 .findaroute {
     margin-top: 20px;
 }
+
+#show-route-list-header {
+    font-weight: bold;
 }​
