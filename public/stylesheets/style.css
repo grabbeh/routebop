@@ -150,7 +150,7 @@ padding-right: 20px;
     font-size: 200%;
     font-weight: bold;
     margin: 0px;
-    padding: 15px 0px 15px 0px;
+    padding: 15px 0px 5px 0px;
 }
 
 #homemap {
@@ -170,28 +170,25 @@ padding-right: 20px;
 
 /* HOME PAGE BUTTONS */
 
-.markerlink:hover {
-    background-color: #E8E8E8;
-}
-
 #searchbox {
-    margin-top: 25px;
-    font-size: 32px;
+    margin: 25px 0 0 0;
+    font-size: 30px;
+    font-weight: bold;
 }
 
 .homebutton {
-    
     height: 120px;  
     padding: 0px;
     margin: 0px; 
     color:#000;
+    position: relative;
 }
 
-#search {background: #56ec9d;}
-#search:hover{background: #9bf4c5;}
+#search {background: #81d777; box-shadow: 0 10px 0 0 #53994b;}
+#search:active{box-shadow: 0 5px 0 0 #53994b; top: 5px;}
 
-#add { background: #ec56a5;}
-#add:hover{ background: #f49bca;}
+#add { background: #e00000; box-shadow: 0 10px 0 0 #b00000;}
+#add:active{ box-shadow: 0 5px 0 0 #b00000; top: 5px;}
 
 .htext {
     margin-top: 25px;
@@ -209,6 +206,7 @@ padding-right: 20px;
     line-height: 120px;
     margin-top: 25px;
     margin-bottom: 0px;
+    color: white;
   }
 
 a.fill-div {
@@ -216,6 +214,7 @@ a.fill-div {
     height: 100%;
     width: 100%;
     text-decoration: none;
+    color: white;
 }
 
 #homeuserlocation {
@@ -240,7 +239,7 @@ cursor:pointer;
 
 #homegeolocate:hover {
     cursor:pointer; 
-    background:#FFE880;
+    text-decoration: underline;
  }
 
 #geolocatemargin {
@@ -249,7 +248,7 @@ margin-right: 10px;
 
 #geolocate:hover {
     cursor:pointer; 
-    background:#FFE880;
+    background:#E8E8E8;
  }
 
 #lineblock {
@@ -257,7 +256,7 @@ margin-right: 10px;
     border-style: solid;
     border-width: 0px 0px 2px 0px;
     padding: 10px 0px 10px 0px;
-    margin: 20px 0px 20px 0px;
+    margin: 10px 0px 10px 0px;
 }
 
 #lineblocktwo {
@@ -265,7 +264,7 @@ margin-right: 10px;
     border-style: solid;
     border-width: 0px 0px 2px 0px;
     padding: 10px 0px 10px 0px;
-    margin: 20px 0px 20px 0px;
+    margin: 10px 0px 20px 0px;
 }
 
 #footer {
@@ -306,10 +305,14 @@ div#usermap {
 .homelist li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #E8E8E8;}
 
 .showlist { width:100%; list-style:none; padding:0; margin-top: 10px; margin-bottom:0px;}
-.showlist li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #E8E8E8;}
+.showlist li { padding:5px 0px 5px 5px; border-bottom: solid; border-width: 1px; border-bottom-color: #E8E8E8;}
 .showlist li:hover { background:#E8E8E8; cursor: pointer;}
 
 /* MAP SCREEN */
+
+.markerlink:hover {
+    background-color: #E8E8E8;
+}
 
 #maptags {
     list-style-type:none;
@@ -631,11 +634,11 @@ color: #000000;
 }
 
 .list { width:100%; list-style:none; padding:0px; margin-top: 10px; margin-bottom:0px;}
-.list li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #E8E8E8;}
+.list li { padding:5px 0px 5px 5px; border-bottom: solid; border-width: 1px; border-bottom-color: #E8E8E8;}
 .list li:hover { background:#E8E8E8; }
 
 .maplist { width:100%; list-style:none; padding:0px 0px 20px 0px; margin-top: 10px; margin-bottom:0px;}
-.maplist li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #E8E8E8;}
+.maplist li { padding:5px 0px 5px 5px; border-bottom: solid; border-width: 1px; border-bottom-color: #E8E8E8;}
 .maplist li:hover { background:#E8E8E8; 
 }
 
@@ -913,6 +916,20 @@ margin-right: 0px;
     margin-top:10px;
 }
 
+#search {
+    box-shadow: none;
+}
+#search:active {
+    box-shadow:none;
+}
+
+#add {
+    box-shadow: none;
+}
+#add:active {
+    box-shadow: none;
+}
+
 #homeuserlocation {
    
     height: 25px;
@@ -925,6 +942,7 @@ margin-right: 0px;
 
 .homebutton {
     height: 50px;   
+    box-shadow: none;
 }
 
 .htext {
