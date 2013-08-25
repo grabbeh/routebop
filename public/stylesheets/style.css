@@ -218,23 +218,29 @@ a.fill-div {
 }
 
 #homeuserlocation {
-   
+    outline: 0;
+    border: 0;
     height: 50px;
     font-size: 100%;
-    width: 300px;
-    margin-left: 15px;
+    width: 250px;
+    margin-left: 5px;
     padding-left: 10px;
+    
+}
+
+#homeuserlocation:focus {
+    outline: 0;
 }
 
 #homeuserlocationsubmit {
-
-    margin-left: 10px;
-    margin-right: 10px;
-    padding-right: 10px;
+    background: #f0f0f0;
+    background: url(/images/rsz_2mglass.png) no-repeat scroll 2px 2px;
+    padding: 0 25px 0 25px;
+    color: black;
 }
 
 #homeuserlocationsubmit:hover {
-cursor:pointer; 
+    cursor:pointer; 
 }
 
 #homegeolocate:hover {
@@ -272,7 +278,7 @@ margin-right: 10px;
     bottom:0;
     width:100%;
     height:75px;  
-    background:#726E6D;
+    background:#f0f0f0;
     margin:0; 
     padding:0;
 }
@@ -971,6 +977,9 @@ clear: both;
 
 #homeuserlocationsubmit {
     margin-left: 0px;
+    font-size: 15px;
+    background: url(/images/rsz_mglass.png) no-repeat scroll 2px 2px;
+    padding: 5px 25px 0 25px;
 }
 
 /* edit map box used on 'show' screen */
