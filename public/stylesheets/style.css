@@ -254,17 +254,17 @@ margin-right: 10px;
 #lineblock {
     border-color: #E8E8E8;
     border-style: solid;
-    border-width: 0px 0px 2px 0px;
-    padding: 10px 0px 10px 0px;
-    margin: 10px 0px 10px 0px;
+    border-width: 0 0 2px 0;
+    padding: 10px 0 10px 0;
+    margin: 10px 0 10px 0;
 }
 
 #lineblocktwo {
     border-color: #E8E8E8;
     border-style: solid;
-    border-width: 0px 0px 2px 0px;
-    padding: 10px 0px 10px 0px;
-    margin: 10px 0px 20px 0px;
+    border-width: 0 0 2px 0;
+    padding: 10px 0 10px 0;
+    margin: 0 0 20px 0;
 }
 
 #footer {
@@ -297,15 +297,15 @@ div#usermap {
 
 .homelist {
   list-style: none;
-  margin: 10px 0px 10px 0px;
+  margin: 10px 0 10px 0;
   padding: 0px;
   
 }
 .homelist li:hover { background:#E8E8E8;   }
-.homelist li { padding:5px 0px 5px 0px; border-bottom: solid; border-width: 1px; border-bottom-color: #E8E8E8;}
+.homelist li { padding:5px 0 5px 0; border-bottom: solid; border-width: 1px; border-bottom-color: #E8E8E8;}
 
-.showlist { width:100%; list-style:none; padding:0; margin-top: 10px; margin-bottom:0px;}
-.showlist li { padding:5px 0px 5px 5px; border-bottom: solid; border-width: 1px; border-bottom-color: #E8E8E8;}
+.showlist { width:100%; list-style:none; padding:0; margin-top: 10px; margin-bottom:0;}
+.showlist li { padding:5px 0 5px 5px; border-bottom: solid; border-width: 1px; border-bottom-color: #E8E8E8;}
 .showlist li:hover { background:#E8E8E8; cursor: pointer;}
 
 /* MAP SCREEN */
@@ -332,7 +332,7 @@ div#usermap {
 
 div#maptaglist {
     padding-top:10px;
-    padding-bottom: 0px;
+    padding-bottom: 0;
 }
 
 .horizontalli {
@@ -399,13 +399,13 @@ div.form {
 }
 
 .photobox {
-   padding: 10px 10px 10px 0px;
+   padding: 10px 10px 10px 0;
 }
 
 div#mymap {
     position:absolute; 
-    top:0px; 
-    bottom:0px; 
+    top:0; 
+    bottom:0; 
     left:0;
     right:0;
     height:100%;
@@ -419,7 +419,7 @@ div#mymap {
   color: white;
   font-family: arial;
   font-size: 16px;
-  margin-top: 0px;
+  margin-top: 0;
   margin-right: 12px;
   margin-left: -8px;
   margin-bottom: 7px;
@@ -474,7 +474,7 @@ div#mymap {
 input.newbutton {
     height: 35px;
     font-size: 16px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     padding-right: 10px;
     padding-left: 10px;
 }
@@ -482,16 +482,16 @@ input.newbutton {
 input.newinput {
     height: 30px;
     font-size: 16px;
-    margin: 10px 10px 10px 0px;
-    padding: 0px 10px 0px 10px;
+    margin: 10px 10px 10px 0;
+    padding: 0 10px 0 10px;
     width: 150px;
 }
 
 input.newinputtwo {
     height: 30px;
     font-size: 16px;
-    margin: 0px;
-    padding: 0px 10px 0px 10px;
+    margin: 0;
+    padding: 0 10px 0 10px;
     width: 100%;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -501,8 +501,8 @@ input.newinputtwo {
 input.newinputtags {
     height: 30px;
     font-size: 16px;
-    margin: 0px 0px 15px 0px;
-    padding: 0px 10px 0px 10px;
+    margin: 0 0px 15px 0;
+    padding: 0 10px 0 10px;
     width: 100%;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -516,8 +516,8 @@ input.newinputtags {
 input.markerdescription {
     height: 30px;
     font-size: 16px;
-    margin: 0px;
-    padding: 0px 10px 0px 10px;;
+    margin: 0;
+    padding: 0 0 0 10px;;
     width: 100%;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -548,7 +548,7 @@ div#stoptracking {
 .neweditbutton {
 line-height: 65px;
 padding: 10px 25px 10px 25px;
-margin: 0px 0px 0px 10px;
+margin: 0 0 0 10px;
 cursor: pointer;
 }
 
