@@ -236,6 +236,7 @@ a.fill-div {
     background: url(/images/rsz_2mglass.png) no-repeat scroll 2px 2px;
     padding: 0 25px 0 25px;
     color: black;
+    font-size: 1px;
 }
 
 #homeuserlocationsubmit:hover {
