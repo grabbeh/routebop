@@ -223,8 +223,6 @@ a.fill-div {
     height: 50px;
     font-size: 100%;
     width: 250px;
-    padding-left: 10px;
-    
 }
 
 #homeuserlocation:focus {
@@ -234,9 +232,9 @@ a.fill-div {
 #homeuserlocationsubmit {
     background: #f0f0f0;
     background: url(/images/rsz_2mglass.png) no-repeat scroll 2px 2px;
-    padding: 0 25px 0 25px;
+    padding: 0 25px 0 10px;
     color: black;
-    font-size: 1px;
+
 }
 
 #homeuserlocationsubmit:hover {
