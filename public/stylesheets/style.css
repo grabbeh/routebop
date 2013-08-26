@@ -233,7 +233,7 @@ a.fill-div {
 #homeuserlocationsubmit {
     background: #f0f0f0;
     background: url(/images/rsz_2mglass.png) no-repeat scroll 2px 2px;
-    padding: 0 25px 0 10px;
+    padding: 0 25px 0 2px;
     color: black;
 
 }
@@ -978,7 +978,7 @@ clear: both;
     margin-left: 0px;
     font-size: 15px;
     background: url(/images/rsz_mglass.png) no-repeat scroll 2px 2px;
-    padding: 5px 25px 0 25px;
+    padding: 5px 25px 0 18px;
 }
 
 /* edit map box used on 'show' screen */
