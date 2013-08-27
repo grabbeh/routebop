@@ -174,7 +174,6 @@ padding-right: 20px;
 #searchbox {
     margin: 5px 0 0 0;
     font-size: 30px;
-
 }
 
 .homebutton {
@@ -230,16 +229,13 @@ a.fill-div {
     outline: 0;
 }
 
-#homeuserlocationsubmit {
-    background: #f0f0f0;
-    background: url(/images/rsz_2mglass.png) no-repeat scroll 2px 2px;
-    padding: 0 25px 0 2px;
-    color: black;
-
-}
-
 #homeuserlocationsubmit:hover {
     cursor:pointer; 
+}
+
+img.locationsubmit {
+    width: 25px;
+    height: 25px;
 }
 
 #homegeolocate:hover {
@@ -972,13 +968,6 @@ margin-right: 0px;
 margin-top: 0px;
 height: 75px;
 clear: both;
-}
-
-#homeuserlocationsubmit {
-    margin-left: 0px;
-    font-size: 15px;
-    background: url(/images/rsz_mglass.png) no-repeat scroll 2px 2px;
-    padding: 5px 25px 0 18px;
 }
 
 /* edit map box used on 'show' screen */
