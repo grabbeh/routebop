@@ -236,6 +236,7 @@ a.fill-div {
 img.locationsubmit {
     width: 25px;
     height: 25px;
+    opacity: 0.3;
 }
 
 #homegeolocate:hover {
