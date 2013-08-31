@@ -249,7 +249,7 @@ margin-right: 10px;
 
 #geolocate:hover {
     cursor:pointer; 
-    background:#E8E8E8;
+    text-decoration: underline;
  }
 
 #lineblock {

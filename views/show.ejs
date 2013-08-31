@@ -1,19 +1,19 @@
 <!doctype html>
 <head>
-    <%- include head.ejs %>
+    <%- include partials/head.ejs %>
 
 </head>
 <body>
     <div id="maincontainer">
-        <%-include header.ejs %>
+        <%-include partials/header.ejs %>
         <div id="body">
             <div id="container">
                 <div class="row">
                     <div class="sixcol">
-                        <%- include showhead.ejs %>
+                        <%- include partials/showhead.ejs %>
                     </div>
                     <div class="sixcol last">
-                        <% include showedit.ejs %>
+                        <% include partials/showedit.ejs %>
                     </div>
                 </div>
                 <div class="row">
@@ -27,23 +27,38 @@
                         <ul id="desclist" class="showlist"></ul>
                     </div>
                 </div>
-                <%-include favourite.ejs %>
+                <%-include partials/favourite.ejs %>
                 <div class="row">
                     <div class="fourcol">
-                        <div id="showDescription"><b>Description</b></div>
-                        <div id="description"></div>
-                        <div id="showtags"><b>Tags</b></div>
-                        <ul id="maptags"</ul>
+
+                        <% if (jsonobj.description) { %>
+                            <div><b>Description</b></div>
+                            <div><p><%= jsonobj.description %></p></div>
+                        <% } %>
+
+                        <% if (jsonobj.tags) { %>
+                            <div id="showtags"><b>Tags</b></div>
+                            <ul id="maptags">
+                            <% jsonobj.tags.forEach(function(tag){ %>
+                                <li><a href="/tags/<%= tag %>"><%= tag %></a></li>
+                             <% }) %>
+                            </ul>
+                        <% } %>
                     </div>
                     <div class="fourcol last">
-                        <div id="imagesHeader"><b>Images</b></div>
-                        <div id="images"></div>
+
+                        <% if (jsonobj.images) { %>
+                            <div><b>Images</b></div>
+                            <% jsonobj.images.forEach(function(image){ %>
+                                <span><a href="<%=image.mainurl %>"><img src="<%= image.thumburl%>"></a></span>
+                            <% }) %>
+                        <% } %>
                     </div>
                 </div>
             </div>
             <div class="clearfooter"></div>
         </div>
-        <%- include footer.ejs %>
+        <div id="footer"></div>
     </div>
 </body>
 </html>
@@ -53,7 +68,7 @@
     var infowindow = new google.maps.InfoWindow();
     var locobj = <%- obj %>;
     
-    function favouriteAjaxPost() {
+    function favouritePost() {
         var obj = {
             favourite: locobj._id,
             plusone: locobj.favourited + 1
@@ -156,44 +171,6 @@
     route.setMap(map);
     map.fitBounds(bounds);
 
-    if (locobj.tags[0] === ""){
-      $('#showtags').remove();
-      $('#maptags').remove();
-    }
-    else {
-    for ( var i = 0, j = locobj.tags.length; i < j; i++ ) {
-        var singletag = locobj.tags[i].trim();
-        $('#maptags').append("<li><a href=/tags/" + singletag + ">" + singletag + "</a>" + "</li>");
-    };
-    }
-    if (locobj.description){
-    $("#description").append("<p>" + locobj.description + "<p>");
-}
-else {
-    $('#showDescription').remove();
-    $('#description').remove();
-}
-
-
-    $('#distance').append("<p><b>" + "Distance " + "</b>" + locobj.distance + " km" + "</b></p>");  
-    $("#titleblock").append("<div>" + locobj.title + "</div>" );
-    $("#subtitleblock").append("<div> submitted by " + "<a href=/user/" + locobj.author + ">" + locobj.author + "</a>" + " on " + locobj.formatteddate + "</div>").addClass("subtitle");
-    $('#favouritedblock').append("<div>Favourited: " + locobj.favourited + " times</div>").addClass("subtitle");
-    
-if (locobj.images.length) {
-
-    for (var i = 0; i < locobj.images.length; i++) {
-           var thumburl = locobj.images[i].thumburl;
-           var mainurl = locobj.images[i].mainurl;
-       
-           $('#images').append("<span>" + "<a href=" + mainurl + ">" + "<img src=" + thumburl + "></a></span>")
-           };
-       }
-       else {
-         $('#imagesHeader').remove();
-           $('#images').remove();
-       }
-
     // end of create blankmap function
     
     };
@@ -202,7 +179,7 @@ if (locobj.images.length) {
     create_blankmap();
     
     $('#favourite').click(function() { 
-        favouriteAjaxPost();
+        favouritePost();
         });
     });
     

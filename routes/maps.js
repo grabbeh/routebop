@@ -92,6 +92,7 @@ exports.getmap = function(req, res) {
 };
 
 // provide map data to /map route to show markers on map following /POST request
+// filtered by tags if tag is sent up with post request
 
 exports.postmap = function(req, res) {
   
@@ -159,9 +160,7 @@ exports.show = function(req, res) {
                       edit = true;
                 }
               }
-            if (err) {
-              res.send("Map not found")
-            }
+            if (!err)
             switch (req.params.format) {
 
             case 'json':
@@ -169,7 +168,7 @@ exports.show = function(req, res) {
             break;
 
             default:
-              res.render('show', {obj: jmap, user: req.user, favourite: fav, mapid: mapid, edit: edit})
+              res.render('show', {jsonobj : map, obj: jmap, user: req.user, fav: fav, edit: edit})
             } 
            
          })
@@ -179,28 +178,16 @@ exports.show = function(req, res) {
 
 exports.favourite = function(req, res) {
     Map.findOne({_id: req.body.favourite}, function(err, map){
-           if (!req.user) {
-                res.send("Please login to add this route to your account");
-                }
-
-              else {
-              map.update({favourited: req.body.plusone}, {upsert: true}, function(err) {
-                  if (err) {console.log("Error with incrementing favourite")}
-                  else {
-                    User.findOne({_id: req.user._id}, function(err, user) {
-                          if (err) { console.log("Error finding user")}
-                          else {
-                          user.update({$addToSet: {favourites: req.body.favourite}}, {upsert: true}, function(err) {
-                                  if (err) {console.log("Error adding to favourites")}      
-                                  else { res.send("Thank you for favouriting this route")}
-                                  })
-                          }
+        if (!req.user) {res.send("Please login to add this route to your account");}
+            map.update({favourited: req.body.plusone}, {upsert: true}, function(err) {
+              User.findOne({_id: req.user._id}, function(err, user) {
+                  user.update({$addToSet: {favourites: req.body.favourite}}, {upsert: true}, function(err) {
+                       res.send("Thank you for favouriting this route")
                       })
-                  }
+                  })    
+               })
             })
-       }
-    })
-}
+         }
 
 // delete a route
 

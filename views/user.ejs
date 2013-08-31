@@ -1,6 +1,6 @@
 <!doctype html>
 <head>
-<%-include head.ejs %>
+<%-include partials/head.ejs %>
 
 <!--jQuery -->
 <script src="https://maps-api-ssl.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
@@ -13,7 +13,7 @@
 </head>
 <body>
 <div id="maincontainer">
-<%-include header.ejs %>
+<%-include partials/header.ejs %>
     <div id="body"> 
       <div id="container">
 
@@ -72,15 +72,16 @@ $(document).ready(function() {
             ajaxTagPost(boxarray, submittag);
             google.maps.event.clearListeners(map, 'idle');
             addTagListeners();
-    
+            $('#showalltagsbutton').removeClass('hide-element');
         })
     
-        $('#showalltagsbuttonuser').click(function(){
+        $('#showalltagsbutton').click(function(){
             var postbounds = map.getBounds();
             processMapBounds(postbounds);
             ajaxBoundsPost(boxarray);
             google.maps.event.clearListeners(map, 'idle');
             addMapListeners();
+            $('#showalltagsbutton').addClass('hide-element');
         })
 
 });

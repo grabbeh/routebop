@@ -1,15 +1,15 @@
 <!doctype html>
 <head>
-    <%-include head.ejs %>
+    <%-include partials/head.ejs %>
 
 </head>
 <body>
     <div id="maincontainer">
-        <%-include header.ejs %>
+        <%-include partials/header.ejs %>
         <div id="body">
             <div id="container">
                 <div class="row">
-                    <% include mapgeobuttons.ejs %>
+                    <% include partials/mapgeobuttons.ejs %>
                 </div>
                 <div class="row">
                     <div class="ninecol">
@@ -34,7 +34,7 @@
             </div>
             <div class="clearfooter"></div>
         </div>
-        <%- include footer.ejs %>
+        <div id="footer"></div>
     </div>
 </body>
 </html>

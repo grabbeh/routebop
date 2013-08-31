@@ -1,0 +1,11 @@
+<div class="textbox">
+    <div id="titleblock" class="headtitle">
+		<%= jsonobj.title %>
+    </div>
+    	
+    <div id="subtitleblock" class="subtitle">
+        submitted by <a href="/user/<%= jsonobj.author %>"><%= jsonobj.author %></a> on <%= jsonobj.formatteddate %>
+    </div>
+    <div class="subtitle" id="favouritedblock">Favourited <%= jsonobj.favourited %> times</div>     
+    
+</div>
