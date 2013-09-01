@@ -46,11 +46,10 @@
                         <% } %>
                     </div>
                     <div class="fourcol last">
-
                         <% if (jsonobj.images) { %>
                             <div><b>Images</b></div>
                             <% jsonobj.images.forEach(function(image){ %>
-                                <span><a href="<%=image.mainurl %>"><img src="<%= image.thumburl%>"></a></span>
+                                <span><a href="<%=image.mainurl %>"><img src="<%= image.thumburl %>"></a></span>
                             <% }) %>
                         <% } %>
                     </div>
