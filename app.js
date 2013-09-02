@@ -7,7 +7,7 @@ var express = require('express')
 , passport = require('passport')
 , flash = require('connect-flash')
 , LocalStrategy = require('passport-local').Strategy
-, routes = require('./routes/maps')
+, map = require('./routes/maps')
 , user = require('./routes/user')
 , transloadit = require('./routes/transloadit')
 , geocoder = require('./routes/geocoder')
@@ -72,35 +72,35 @@ app.configure(function(){
 });
 
 // Routes
-app.get('/test', routes.test);
+app.get('/test', map.test);
 
 app.get('/transloadit', transloadit.transloadit);
 
 app.post('/postupload', transloadit.postupload);
 
-app.get('/', routes.home);
+app.get('/', map.home);
 
-app.get('/new', routes.new);
+app.get('/new', map.new);
 
-app.post('/new', routes.submitmap);
+app.post('/new', map.submitmap);
 
-app.get('/search', routes.getSearch);
+app.get('/search', map.getSearch);
 
-app.post('/search.:format?', routes.postBounds);
+app.post('/search.:format?', map.postBounds);
 
-app.get('/show/:id.:format?', routes.show);
+app.get('/show/:id.:format?', map.show);
 
-app.post('/show', routes.favourite);
+app.post('/show', map.favourite);
 
-app.get('/delete/:id', login.ensureLoggedIn('/login'), routes.delete);
+app.get('/delete/:id', login.ensureLoggedIn('/login'), map.delete);
 
-app.get('/edit/:id', login.ensureLoggedIn('/login'), routes.edit);
+app.get('/edit/:id', login.ensureLoggedIn('/login'), map.edit);
 
-app.get('/delfav/:id', login.ensureLoggedIn('/login'), routes.delfav);
+app.get('/delfav/:id', login.ensureLoggedIn('/login'), map.delfav);
 
-app.post('/edit', routes.editupdate);
+app.post('/edit', map.editupdate);
 
-app.get('/tags/:id', routes.tagged);
+app.get('/tags/:id', map.tagged);
 
 // Authentication
 
