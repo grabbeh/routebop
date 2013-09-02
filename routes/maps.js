@@ -12,11 +12,13 @@ exports.home = function(req, res){
     .limit(5)
     .select('_id title')
     .exec(function(err, fmaps) {
+       var fmaps = fmaps;
        Map.find()
           .sort('-date')
           .limit(5)
           .select('_id title')
           .exec(function(err, dmaps) {
+            var dmaps = dmaps;
             res.render('home', {user: req.user, fmaps: fmaps, dmaps: dmaps})
      })
   });

@@ -168,7 +168,7 @@
         };
     
         $.ajax({
-            url: "/map",
+            url: "/search",
             type: "POST",
             contentType: "application/json",
             processData: false,
@@ -274,7 +274,7 @@
     var arrayofarrays = [];
     if (maps.length > 0) {
         for (var i = 0, j = maps.length; i < j; i++) {
-            var marker = new google.maps.LatLng(maps[i].waypoints[0].lat, maps[i].waypoints[0].lon);
+            var marker = new google.maps.LatLng(maps[i].loc[0], maps[i].loc[1]);
             bounds.extend(marker);
             var url = maps[i]._id;
             var fullurl = "<span class=\"markerlink\"><a href='/show/" + url + "'>View route</a></span>";
