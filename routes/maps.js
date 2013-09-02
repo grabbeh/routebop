@@ -98,14 +98,8 @@ if (req.body.tag) {
   .where('tags').equals(tag)
   .select('_id title loc tags')
   .exec(function(err, maps) {
-        switch (req.params.format) {
-           case 'json':
-            res.send(maps);
-            break;
-            default: 
-            res.json(maps);  
-        }     
-    })
+      res.json(maps);  
+  })
 }
 
 else {

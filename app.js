@@ -86,7 +86,7 @@ app.post('/new', map.submitmap);
 
 app.get('/search', map.getSearch);
 
-app.post('/search.:format?', map.postBounds);
+app.post('/search', map.postBounds);
 
 app.get('/show/:id.:format?', map.show);
 
