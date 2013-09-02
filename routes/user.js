@@ -66,24 +66,18 @@ User.findOne({username: newuser.toUpperCase()}, function(err, user) {
 }
 
 exports.updateaccountinfo = function(req, res) {
-    
-    User.findOne({_id: req.user._id}, function(err, user) {
-                          if (err) { console.log("Error finding user")}
-                          else {
-
-                            user.info = req.body.info
-                            user.email = req.body.email
-              user.save(function(err) {
-                                  if (!err) {
-                                       res.redirect('/account');
-                                    }
-                               })                   
-        }
-    })
+  User.findOne({_id: req.user._id}, function(err, user) {
+    user.info = req.body.info
+    user.email = req.body.email
+    user.save(function(err) {
+      if (!err) {
+        res.redirect('/account');
+      }
+    })                   
+  })
 }
 
 exports.getPublicUser = function (req, res){
-  
   User.findOne({_id: req.params.id})
   .select('_id email favourites info')
   .populate('favourites')    
@@ -91,10 +85,11 @@ exports.getPublicUser = function (req, res){
        if (!err){
           var publicUser = JSON.stringify(user);
           var userId = user._id;
-              Map.find({author: req.params.id}, function(err, maps) {
-
+              Map.find({author: req.params.id})
+                .select('_id title loc tags')
+                .exec(function(err, maps) {
               var userMaps = JSON.stringify(maps);
-              res.render('user', {layout: false, user: req.user, publicUser: publicUser, userId: userId, userMaps: userMaps});
+              res.render('user', {user: req.user, publicUser: publicUser, userId: userId, userMaps: userMaps});
         })
       }
   })

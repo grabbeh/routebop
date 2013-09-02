@@ -29,7 +29,7 @@
             </div>
             <div class="homerow">
                 <div class="threecol" id="homebuttontext">
-                    <div class="homebutton" id="search"><a class="fill-div" href="/map">Search</a></div>
+                    <div class="homebutton" id="search"><a class="fill-div" href="/search">Search</a></div>
                 </div>
                 <div class="threecol">
                     <div class="htext">Browse through user journeys to discover the best parts of cities and countries around the World.</div>
@@ -49,11 +49,20 @@
             <div class="homerow">
                 <div class="threecol" id="firstlistbox">
                     <b>Popular routes</b>
-                    <ul class="list" id="mostfavourited"></ul>
+                    <ul class="list" id="mostfavourited">
+                            <% fmaps.forEach(function(fmap){ %>
+                                <li><a href=/show/"<%= fmap._id %>"><%= fmap.title %></a></li>
+                            <% }) %>
+                    </ul>
                 </div>
                 <div class="threecol" id="listbox">
                     <b>Latest routes</b>
-                    <ul class="list" id="latestwanders"></ul>
+                    <ul class="list" id="latestwanders">
+
+                            <% dmaps.forEach(function(dmap){ %>
+                                <li><a href=/show/"<%= dmap._id %>"><%= dmap.title %></a></li>
+                            <% }) %>
+                    </ul>
                 </div>
                 <div class="threecol" id="listbox">
                     <b>Places</b>
@@ -94,11 +103,6 @@
     
     $(document).ready(function() {
     
-    var maps = <%- maps %>;
-    var datemaps = <%- datemaps %>;
-    createMapListings(maps, '#mostfavourited');
-    createMapListings(datemaps, '#latestwanders');
-     
         // initial create map function to push map bounds, add event listeners - for drag on push.
         create_map();
     
@@ -116,20 +120,6 @@
             navigator.geolocation.getCurrentPosition(geolocate, geolocateError,{timeout:5000});
         });
     
-        $('#maptags').delegate('li', 'click', function(){
-            submittag = $(this).text().trim();        
-            var postbounds = map.getBounds();
-            processMapBounds(postbounds);
-            ajaxTagPost(boxarray);
-            google.maps.event.clearListeners(map);
-        })
-    
-        $('#showalltagsbutton').click(function(){
-            var postbounds = map.getBounds();
-            processMapBounds(postbounds);
-            ajaxBoundsPost(boxarray);
-            addMapListeners();
-        })
     });
     
     function geolocate(pos) {

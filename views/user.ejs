@@ -90,7 +90,7 @@ function create_map() {
 var maps = <%- userMaps %>
 console.log(maps);
 var mapOptions = {
-            center: new google.maps.LatLng(maps[0].waypoints[0].lat, maps[0].waypoints[0].lon),
+            center: new google.maps.LatLng(maps[0].loc[0], maps[0].loc[1]),
             zoom: 13,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             mapTypeControlOptions: {
@@ -199,7 +199,7 @@ var mapOptions = {
     var tagarrays = [];
     if (maps.length > 0) {
         for (var i = 0, j = maps.length; i < j; i++) {
-            var marker = new google.maps.LatLng(maps[i].waypoints[0].lat, maps[i].waypoints[0].lon);
+            var marker = new google.maps.LatLng(maps[i].loc[0], maps[i].loc[1]);
             bounds.extend(marker);
             var url = maps[i]._id;
             var fullurl = "<span class=\"markerlink\"><a href='/show/" + url + "'>View route</a></span>";
@@ -230,7 +230,7 @@ var mapOptions = {
     
     if (maps.length > 0) {
         for (var i = 0, j = maps.length; i < j; i++) {
-            var marker = new google.maps.LatLng(maps[i].waypoints[0].lat, maps[i].waypoints[0].lon);
+            var marker = new google.maps.LatLng(maps[i].loc[0], maps[i].loc[1]);
             bounds.extend(marker);
             var url = maps[i]._id;
             var fullurl = "<a href='/show/" + url + "'>Route</a></div>";
@@ -268,7 +268,6 @@ var mapOptions = {
             user: publicUser._id
         };
         var jobj = JSON.stringify(obj);
-        console.log(jobj)
     
         $.ajax({
             url: "/user",
@@ -291,7 +290,6 @@ var mapOptions = {
             user: publicUser._id,
             tag: tag
         };
-        console.log(obj);
         $.ajax({
             url: "/user",
             type: "POST",

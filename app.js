@@ -40,22 +40,15 @@ passport.deserializeUser(function(id, done) {
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
-    
     process.nextTick(function () {
-     
       User.findOne({_id: username}, function(err, user) {
-
         if (err) { return done(err); }
         if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
-
-
-        bcrypt.compare(password, user.hash, function(err, res) {
-        if (err) { return done(null, false, { message: 'Invalid password' }); }
-
-            return done(null, user);
-             
+          bcrypt.compare(password, user.hash, function(err, res) {
+          if (err) { return done(null, false, { message: 'Invalid password' }); }
+              return done(null, user);
             });
-      })
+        })
     });
   }
 ));
@@ -91,9 +84,9 @@ app.get('/new', routes.new);
 
 app.post('/new', routes.submitmap);
 
-app.get('/map', routes.getmap);
+app.get('/search', routes.getSearch);
 
-app.post('/map.:format?', routes.postmap);
+app.post('/search.:format?', routes.postBounds);
 
 app.get('/show/:id.:format?', routes.show);
 
@@ -128,11 +121,7 @@ app.get('/user/:id', user.getPublicUser);
 
 app.post('/user', user.postPublicUser);
 
-app.get('/user/:id/favourites', routes.findfavouritesbyauthor);
-
 app.get('/places/:id', geocoder.test);
-
-app.post('/places', routes.postmap);
 
 app.get('/places/:id/:distance', geocoder.testjson);
 

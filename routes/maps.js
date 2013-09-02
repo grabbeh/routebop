@@ -7,18 +7,22 @@ var User = require('../models/user.js');
 // get route for home page
 
 exports.home = function(req, res){
-  Map.find({},{}, {limit: 5, sort:{favourited: -1}}, function(err, maps) {
-    var jmaps = JSON.stringify(maps);
-      Map.find({},{}, {limit: 5, sort:{date: -1}}, function(err, datemaps) {
-        var jdatemaps = JSON.stringify(datemaps);
-          
-          res.render('home', {user: req.user, maps: jmaps, datemaps: jdatemaps})
-          
+  Map.find()
+    .sort('-favourited')
+    .limit(5)
+    .select('_id title')
+    .exec(function(err, fmaps) {
+       Map.find()
+          .sort('-date')
+          .limit(5)
+          .select('_id title')
+          .exec(function(err, dmaps) {
+            res.render('home', {user: req.user, fmaps: fmaps, dmaps: dmaps})
      })
   });
 };
 
-// get route for new map
+// get route for new map - providing default values if no queries are available
 
 exports.new = function(req, res){
 
@@ -39,25 +43,18 @@ else {
 	res.render('new',{user: req.user, lat: lat, lng: lng})
 };
 
-// post map to database by taking req.body data and creating new schema
+// saves map following post data from /new
 
 exports.submitmap = function(req, res) {
-  console.log(req.body.images);
   var day = moment(new Date());
   var formattedDate = day.format("MMMM Do YYYY, h:mm:ss a");
-
-  if (!req.user) {
-    id = "guest"
-  }
-  else {
-    id = req.user._id
-  }
-
+  if (!req.user) { id = "guest" }
+  else { id = req.user._id }
   new Map({
           author: id,
           images: req.body.images,
           formatteddate: formattedDate,
-	         favourited: 0,
+	        favourited: 0,
           loc: req.body.loc,
 		      locTwo: req.body.locTwo,
           waypoints: req.body.waypoints, 
@@ -68,33 +65,26 @@ exports.submitmap = function(req, res) {
           distance: req.body.distance,
           tags: req.body.tags,
           }).save(function(err, map) {
-          if (err) {
-              console.log('Error')
-            }
-          else {
               var data = {};
               data['message'] = "Route saved - thank you";
               data['id'] = map._id;
               res.json(data);
-            }
           });
 };
 
+// renders basic map which when created posts bounds to obtain actual map data
 
-// provide map data to /map route to show markers on /GET request
-
-exports.getmap = function(req, res) {
+exports.getSearch = function(req, res) {
 
   var lat = 51.50678771873268;
   var lng = -0.12717489055171427;
-
-  res.render('map', {user: req.user, lat: lat, lng: lng});  
+  res.render('search', {user: req.user, lat: lat, lng: lng});  
 };
 
 // provide map data to /map route to show markers on map following /POST request
 // filtered by tags if tag is sent up with post request
 
-exports.postmap = function(req, res) {
+exports.postBounds = function(req, res) {
   
 if (req.body.tag) {
   
@@ -104,22 +94,15 @@ if (req.body.tag) {
   Map.ensureIndexes;
   Map.find({loc:{$within:{$box:box}}})
   .where('tags').equals(tag)
+  .select('_id title loc tags')
   .exec(function(err, maps) {
-    
-        if (err) { console.log(err);
-              }
-        else  {  
-          
-          switch (req.params.format) {
-
-            case 'json':
+        switch (req.params.format) {
+           case 'json':
             res.send(maps);
             break;
-
             default: 
             res.json(maps);  
-            }  
-        }       
+        }     
     })
 }
 
@@ -128,18 +111,15 @@ else {
   var mapbounds = req.body.mapbounds;
   box = [[mapbounds[0], mapbounds[1]], [mapbounds[2], mapbounds[3]]];
   Map.ensureIndexes;
-  Map.find({loc:{$within:{$box:box}}}, function(err, maps) {
-
-      if (err) { console.log(err);
-              }
-        else  {
-                res.json(maps);
-              }      
+  Map.find({loc:{$within:{$box:box}}})
+  .select('_id title loc tags')
+  .exec(function(err, maps) {
+       res.json(maps);     
     })
   }
 };
 
-// Locates map on basis of ID in url before returning map, stringifying and sending to server
+// Locates individual map on basis of ID in url before returning map, stringifying and sending to server
 
 exports.show = function(req, res) {
     var mapid = req.params.id;
@@ -168,7 +148,7 @@ exports.show = function(req, res) {
             break;
 
             default:
-              res.render('show', {jsonobj : map, obj: jmap, user: req.user, fav: fav, edit: edit})
+              res.render('show', {map : map, jmap: jmap, user: req.user, fav: fav, edit: edit})
             } 
            
          })
@@ -214,18 +194,17 @@ exports.delfav = function(req, res) {
   }
 }
                
-// edit a route
+// provide route for GET request for /edit 
 
 exports.edit = function(req, res) {
      Map.findOne({_id: req.params.id}, function(error, map) {
           if (req.user._id === map.author) {
-
-          var jmap = JSON.stringify(map);
-          res.render('edit', {obj: jmap, user: req.user});
-        }
-        else {
-          res.redirect('/account');
-        }
+              var jmap = JSON.stringify(map);
+              res.render('edit', {obj: jmap, user: req.user});
+            }
+          else {
+            res.redirect('/account');
+          }
     })
 };
 
@@ -236,7 +215,6 @@ exports.editupdate = function(req, res) {
    Map.findById(req.body.id, function(err, map) {
       if (!err)
          {
-		 
           map.loc = req.body.loc;
           map.images = req.body.images;
 		      map.twoLoc = req.body.locTwo;
@@ -247,49 +225,15 @@ exports.editupdate = function(req, res) {
           map.markerdescs = req.body.markerdescs;
           map.distance = req.body.distance;
           map.tags = req.body.tags;
-
           map.save(function(err) {
-          if (err) {
-              console.log('Error')
-
-            }
-          else {
               var data = {};
               data['message'] = "Route saved - thank you";
               data['id'] = req.body.id;
               res.json(data);
-              
-            }
           })
         }
     })
 }
-
-exports.findfavouritesbyauthor = function (req, res) {
-      var author = req.params.id;
-      User.findOne({_id: author})
-      .select('_id email username favourites info')
-      .populate('favourites')
-      .exec(function(err, user) {
-         if (!err) {
-          var clientUser = JSON.stringify(user);
-          res.render('favourites', {clientUser: clientUser, author: author, user: req.user});
-        }
-      })
-}
-
-exports.findmapsbyauthor = function(req, res) {
-     user = req.query.id;
-     Map.find({author: user}, function(err, maps) {
-
-      if (err) { console.log(error);
-              }
-        else  {
-                var jmaps = JSON.stringify(maps);
-                res.render('submitted', {maps: jmaps, author: user, user: req.user });
-              }    
-    })
-};
 
 exports.tagged = function(req, res) {
    

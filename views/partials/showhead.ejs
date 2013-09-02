@@ -1,11 +1,11 @@
 <div class="textbox">
     <div id="titleblock" class="headtitle">
-		<%= jsonobj.title %>
+		<%= map.title %>
     </div>
     	
     <div id="subtitleblock" class="subtitle">
-        submitted by <a href="/user/<%= jsonobj.author %>"><%= jsonobj.author %></a> on <%= jsonobj.formatteddate %>
+        submitted by <a href="/user/<%= map.author %>"><%= map.author %></a> on <%= map.formatteddate %>
     </div>
-    <div class="subtitle" id="favouritedblock">favourited <%= jsonobj.favourited %> times</div>     
+    <div class="subtitle" id="favouritedblock">favourited <%= map.favourited %> times</div>     
     
 </div>

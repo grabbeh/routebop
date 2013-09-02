@@ -31,24 +31,24 @@
                 <div class="row">
                     <div class="fourcol">
 
-                        <% if (jsonobj.description) { %>
+                        <% if (map.description) { %>
                             <div><b>Description</b></div>
-                            <div><p><%= jsonobj.description %></p></div>
+                            <div><p><%= map.description %></p></div>
                         <% } %>
 
-                        <% if (jsonobj.tags) { %>
+                        <% if (map.tags) { %>
                             <div id="showtags"><b>Tags</b></div>
                             <ul id="maptags">
-                            <% jsonobj.tags.forEach(function(tag){ %>
+                            <% map.tags.forEach(function(tag){ %>
                                 <li><a href="/tags/<%= tag %>"><%= tag %></a></li>
                              <% }) %>
                             </ul>
                         <% } %>
                     </div>
                     <div class="fourcol last">
-                        <% if (jsonobj.images > 0) { %>
+                        <% if (map.images > 0) { %>
                             <div><b>Images</b></div>
-                            <% jsonobj.images.forEach(function(image){ %>
+                            <% map.images.forEach(function(image){ %>
                                 <span><a href="<%=image.mainurl %>"><img src="<%= image.thumburl %>"></a></span>
                             <% }) %>
                         <% } %>
@@ -65,12 +65,12 @@
     var map;
     var arrayofwaypoints = [];
     var infowindow = new google.maps.InfoWindow();
-    var locobj = <%- obj %>;
+    var jmap = <%- jmap %>;
     
     function favouritePost() {
         var obj = {
-            favourite: locobj._id,
-            plusone: locobj.favourited + 1
+            favourite: jmap._id,
+            plusone: jmap.favourited + 1
         };
     
         $.ajax({
@@ -106,7 +106,7 @@
     function create_blankmap(){
     
     var mapOptions = {
-        center: new google.maps.LatLng(locobj.waypoints[0].lat, locobj.waypoints[0].lon),
+        center: new google.maps.LatLng(jmap.waypoints[0].lat, jmap.waypoints[0].lon),
         zoom: 13,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         mapTypeControlOptions: {
@@ -136,17 +136,17 @@
     
     // loop through markers and add to map
     
-    for ( var i = 0, j = locobj.places.length; i < j; i++ ) {
-      var marker = new google.maps.LatLng(locobj.places[i].lat, locobj.places[i].lon);
+    for ( var i = 0, j = jmap.places.length; i < j; i++ ) {
+      var marker = new google.maps.LatLng(jmap.places[i].lat, jmap.places[i].lon);
         bounds.extend(marker);
-        var descs = locobj.markerdescs[i];
+        var descs = jmap.markerdescs[i];
         placeMarker(marker, descs);
     };
     
     // loop through waypoints and add to array of waypoints which is then added to map
     
-    for ( var i = 0, j = locobj.waypoints.length; i < j; i++) {
-        var x = new google.maps.LatLng(locobj.waypoints[i].lat, locobj.waypoints[i].lon);
+    for ( var i = 0, j = jmap.waypoints.length; i < j; i++) {
+        var x = new google.maps.LatLng(jmap.waypoints[i].lat, jmap.waypoints[i].lon);
         arrayofwaypoints.push(x);
         bounds.extend(x);
       };
