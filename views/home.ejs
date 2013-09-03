@@ -51,7 +51,7 @@
                     <b>Popular routes</b>
                     <ul class="list" id="mostfavourited">
                             <% fmaps.forEach(function(fmap){ %>
-                                <li><a href=/show/"<%= fmap._id %>"><%= fmap.title %></a></li>
+                                <li><a href=/show/<%= fmap._id %>><%= fmap.title %></a></li>
                             <% }) %>
                     </ul>
                 </div>
@@ -60,7 +60,7 @@
                     <ul class="list" id="latestwanders">
 
                             <% dmaps.forEach(function(dmap){ %>
-                                <li><a href=/show/"<%= dmap._id %>"><%= dmap.title %></a></li>
+                                <li><a href=/show/<%= dmap._id %>><%= dmap.title %></a></li>
                             <% }) %>
                     </ul>
                 </div>
