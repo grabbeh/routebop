@@ -77,6 +77,10 @@ app.configure(function(){
 });
 
 // middleware
+function removeUser(req, res, next) {
+    app.locals.user = false;
+    next();
+}
 
 // Routes
 app.get('/test', map.test);
@@ -126,7 +130,7 @@ app.post('/login',
       res.redirect('/');
 })
 
-app.get('/logout', user.logout);
+app.get('/logout', removeUser, user.logout);
 
 app.get('/user/:id', user.getPublicUser);
 
