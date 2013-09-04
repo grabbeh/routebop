@@ -2,12 +2,12 @@
 <div class="row">
 
 <% if (fav) { %>
-         <div class="fourcol subtitle" id="result"><p><b>This route is in your favourites</b></p></div>
+         <div class="fourcol" id="result"><p><b>This route is in your favourites</b></p></div>
          <div class="fourcol"></div>
          <div class="fourcol last" id="distance"><p><b><%= map.distance %> km</b></p></div>
 
 <% } else { %>
-        <div class="fourcol subtitle" id="favourite"><p id="result">Favourite this route</p></div>
+        <div class="fourcol" id="favourite"><p id="result">Favourite this route</p></div>
         <div class"fourcol"></div>
         <div class="fourcol last" id="distance"><p><b>Distance:</b> <%= map.distance %> km</p></div>
 <% } %>

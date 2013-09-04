@@ -181,7 +181,7 @@
           
         var obj = {
             images: images,
-            id: locobj._id,
+            id: mapp._id,
             loc: loc,
             locTwo: locTwo,
             waypoints: newData,
@@ -203,7 +203,7 @@
             complete: function (data) {
                   $('#output').html(data.message);
                     setTimeout(function() {
-              window.location.href = "/show/" + locobj._id;
+              window.location.href = "/show/" + mapp._id;
                     }, 2000);
                 }
             });
@@ -214,10 +214,10 @@
     
     function create_map() {
     
-    locobj = <%- obj %>;
+    mapp = <%- map %>;
 
     var mapOptions = {
-        center: new google.maps.LatLng(locobj.waypoints[0].lat, locobj.waypoints[0].lon),
+        center: new google.maps.LatLng(mapp.waypoints[0].lat, mapp.waypoints[0].lon),
         zoom: 13,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         mapTypeControlOptions: {
@@ -269,17 +269,17 @@
     // show map functions
     // loop through markers and add to map using placeMarker function
     
-    for ( var i = 0, j = locobj.places.length; i < j; i++ ) {
-        var marker = new google.maps.LatLng(locobj.places[i].lat, locobj.places[i].lon)
-        var descs = locobj.markerdescs[i];
+    for ( var i = 0, j = mapp.places.length; i < j; i++ ) {
+        var marker = new google.maps.LatLng(mapp.places[i].lat, mapp.places[i].lon)
+        var descs = mapp.markerdescs[i];
         bounds.extend(marker);
         placeMarker(marker, descs);
     };
     
     // loop through waypoints and add to array of waypoints which is then added to map
     
-    for ( var i = 0, j = locobj.waypoints.length; i < j; i++) {
-            var x = new google.maps.LatLng(locobj.waypoints[i].lat, locobj.waypoints[i].lon);
+    for ( var i = 0, j = mapp.waypoints.length; i < j; i++) {
+            var x = new google.maps.LatLng(mapp.waypoints[i].lat, mapp.waypoints[i].lon);
             cpts = poly.getPath();
             cpts.push(x);
             bounds.extend(x);
@@ -288,23 +288,23 @@
     addDescriptions();
     
     // add title and description to page
-    if (locobj.tags[0] === ""){
+    if (mapp.tags[0] === ""){
      $('#tags').append("");
     }
     else {
-        var tagsString = locobj.tags.join(" ");
+        var tagsString = mapp.tags.join(" ");
         $('#tags').val(tagsString);
     }
     
-    $("#description").val(locobj.description);
-    $("#title").val(locobj.title);
-    $('#lengthparent').append("<p>" + "Distance: " + locobj.distance + " km" + "</p>");
+    $("#description").val(mapp.description);
+    $("#title").val(mapp.title);
+    $('#lengthparent').append("<p>" + "Distance: " + mapp.distance + " km" + "</p>");
     
-    if (locobj.images.length) {
-    for (var i = 0; i < locobj.images.length; i++) {
-           var thumburl = locobj.images[i].thumburl;
-           var mainurl = locobj.images[i].mainurl;
-           images.push(locobj.images[i]);
+    if (mapp.images.length) {
+    for (var i = 0; i < mapp.images.length; i++) {
+           var thumburl = mapp.images[i].thumburl;
+           var mainurl = mapp.images[i].mainurl;
+           images.push(mapp.images[i]);
            $('#thumb').append("<a href=" + mainurl + ">" + "<img src=" + thumburl + "><span>x</span></a>");
            $('#thumb').find('span').addClass('removeImage');
            };
@@ -415,7 +415,7 @@
     
     
     function addDescriptions() {
-        var mdescs = locobj.markerdescs;
+        var mdescs = mapp.markerdescs;
         for (var i = 0; i < mdescs.length; i++) {
           $('#newcontentparent').append('<p><input class=\"markerdescription\" type="text\" value=\"' + mdescs[i] + '\"' + '></p>');
           };

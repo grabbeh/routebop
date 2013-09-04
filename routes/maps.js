@@ -19,7 +19,7 @@ exports.home = function(req, res){
           .select('_id title')
           .exec(function(err, dmaps) {
             var dmaps = dmaps;
-            res.render('home', {user: req.user, fmaps: fmaps, dmaps: dmaps})
+            res.render('home', { fmaps: fmaps, dmaps: dmaps})
      })
   });
 };
@@ -27,22 +27,9 @@ exports.home = function(req, res){
 // get route for new map - providing default values if no queries are available
 
 exports.new = function(req, res){
-
-var isEmpty = function(obj) {
-  return Object.keys(obj).length === 0;
-}
-
-if (isEmpty(req.query)){
-  var lat = 51.50678771873268;
-  var lng = -0.12717489055171427;
-}
-
-else {
-  var lat = req.query.lat;
-  var lng = req.query.lng;
-}
-
-	res.render('new',{user: req.user, lat: lat, lng: lng})
+  res.locals.lat = req.query.lat;
+  res.locals.lng = req.query.lng;
+  res.render('new')
 };
 
 // saves map following post data from /new
@@ -77,10 +64,7 @@ exports.submitmap = function(req, res) {
 // renders basic map which when created posts bounds to obtain actual map data
 
 exports.getSearch = function(req, res) {
-
-  var lat = 51.50678771873268;
-  var lng = -0.12717489055171427;
-  res.render('search', {user: req.user, lat: lat, lng: lng});  
+  res.render('search');  
 };
 
 // provide map data to /map route to show markers on map following /POST request
@@ -144,7 +128,7 @@ exports.show = function(req, res) {
             break;
 
             default:
-              res.render('show', {map : map, jmap: jmap, user: req.user, fav: fav, edit: edit})
+              res.render('show', {map : map, jmap: jmap, fav: fav, edit: edit})
             } 
            
          })
@@ -195,8 +179,8 @@ exports.delfav = function(req, res) {
 exports.edit = function(req, res) {
      Map.findOne({_id: req.params.id}, function(error, map) {
           if (req.user._id === map.author) {
-              var jmap = JSON.stringify(map);
-              res.render('edit', {obj: jmap, user: req.user});
+              var map = JSON.stringify(map);
+              res.render('edit', {map: map});
             }
           else {
             res.redirect('/account');
@@ -236,13 +220,13 @@ exports.tagged = function(req, res) {
    Map.ensureIndexes;
    Map.find({ tags: req.params.id }, function(err, maps) {
    
-   var tmaps = JSON.stringify(maps);
-   res.render('tagged', {user: req.user, maps: tmaps, tag: req.params.id });
+   var maps = JSON.stringify(maps);
+   res.render('tagged', {maps: maps, tag: req.params.id });
    }) 
 }
 
 exports.test = function(req, res){
-  res.render('test', {user: req.user})
+  res.render('test')
 
 }
 

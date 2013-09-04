@@ -21,62 +21,37 @@
                     
                     <form method="post" action="/account">
                         <p><b>Info</b></p>
-                        <div><textarea id="info" name="info" rows="7" type="text"/></textarea></div>
+                        <div><textarea name="info" rows="7" type="text"/><%= usr.info %></textarea></div>
                         <p><b>Email</b></p>
-                        <div><input id="email" class="newinput" name="email" type="text"/></div>
+                        <div>
+                            <input value="<%= usr.email %>" class="newinput" name="email" type="text"/>
+                        </div>
                         
                         <div><p><input class="newbutton" type="submit" value="Update/add information"><p></div>
                     </form>
               </div>
 
-          <div class="fourcol"><div class="title"><p>Submitted routes<p></div><ul id="infooutput" class="homelist"></ul>
-          </div>
-          <div class="fourcol last"><div class="title"><p>Favourites</p></div><ul id="favoutput" class="homelist"></ul>
-          </div>
+          <div class="fourcol"><div class="title"><p>Submitted routes<p></div>
+          <ul class="homelist">
 
+            <% maps.forEach(function(map){ %>
+                 <li><%= map.title %><a href="/show/<%= map._id%>"> | Route </a><a href="/edit/<%= map._id %>"> | Edit </a><a href="/delete/<%= map._id %>"> | Delete </a></li>
+            <% }) %>
+          </ul>
           </div>
+          <div class="fourcol last"><div class="title"><p>Favourites</p></div>
+          <ul class="homelist">
+            <% usr.favourites.forEach(function(favourite){ %>
+                 <li><%= favourite.title %><a href="/show/<%= favourite._id%>">| Route </a><a href="/delfav/<%= favourite._id %>"> | De-favourite </a></li>
+            <% }) %>
 
+          </ul>
+        </div>
+      </div>
     <div class="clearfooter"></div> 
 </div>
    <div id="footer"></div>
 </div>
 </body>
 </html>
-
-<script>
-$(document).ready(function(){
-
-var clientuser = <%- clientUser %>;
-var favarray = clientuser.favourites;
-$('#info').val(clientuser.info);
-$('#email').val(clientuser.email);
-
-createFavListings(favarray);
-
-var maps = <%- maps %>;
-  for (var i = 0; i < maps.length; i++) {
-    var url = maps[i]._id;
-    var fullshowurl = "<a href='/show/" + url + "'>Route</a>";
-    var fulldeleteurl = "<a href='/delete/" + url + "'>Delete</a>";
-    var fullediturl = "<a href='/edit/" + url + "'>Edit</a>";
-    var title = "<li>" + maps[i].title + " | " + fullshowurl + " | " + fulldeleteurl + " | " + fullediturl + "</li>";
-    $('#infooutput').append(title); 
-    };
-});
-
-
-function createFavListings(favarray) {
- for (var i = 0; i < favarray.length; i++) {
-    var id = favarray[i]._id;
-    var title = favarray[i].title;
-    var fullurl = "<a href='/show/" + id + "'>Route</a>";
-    var fulldeletefavurl = "<a href=/delfav/" + id + ">De-favourite</a>";
-    var title = "<li>" + title + " | " + fullurl + " | " + fulldeletefavurl + "</li>";
-    $('#favoutput').append(title);
-    
-  };
-};
-
-</script>
-
 

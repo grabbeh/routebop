@@ -18,7 +18,7 @@
                         </div>
 
                         <div>
-                            <div id="maptaglist"><b>Filter by tags</b></div>
+                            <div id="maptaglist" class="hide-element"><b>Filter by tags</b></div>
                             <ul id="maptags">
                             </ul>
                         </div>
@@ -120,8 +120,6 @@
         var obj = {
             mapbounds: boxarray,
         };
-        var jobj = JSON.stringify(obj);
-    
         $.ajax({
             url: "/search",
             type: "POST",
@@ -129,6 +127,7 @@
             processData: false,
             data: JSON.stringify(obj),
             success: function(data) {
+                console.log('Success!!!');
                 clearOverlays();
                 processMapData(data);
                 mc = new MarkerClusterer(map, markersarray);
@@ -158,10 +157,9 @@
     };
     
     function create_map() {
-        var startLat = <%- lat %>;
-        var startLng = <%- lng %>;
+
         var mapOptions = {
-            center: new google.maps.LatLng(startLat, startLng),
+            center: new google.maps.LatLng(<%= lat %>, <%= lng %>),
             zoom: 13,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             mapTypeControlOptions: {
@@ -213,6 +211,7 @@
         }
         $('#showroutelist').children().remove().end();
         $('#maptags').children().remove().end();
+        $('#maptaglist').addClass('hide-element');
     };
     
     // place marker function used in processMapData function
@@ -285,9 +284,10 @@
             placeMarker(marker, title); 
             tagarrays.push(maps[i].tags);
         };
+        $('#maptaglist').removeClass('hide-element');
         var flatarray = _.flatten(tagarrays);
         var reducedarray = _.uniq(flatarray);
-       
+        
     
         for (var i = 0, j = reducedarray.length; i < j; i++) {
             var maptag = reducedarray[i].trim();

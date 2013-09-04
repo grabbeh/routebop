@@ -7,26 +7,20 @@ var bcrypt = require("bcrypt");
 // passport introduction
 
 exports.account = function(req, res){
-    Map.find({author: req.user._id}, function(error, maps) {
-      if (error) { console.log(error);
-              }
-        else  {
-      var jmaps = JSON.stringify(maps);
-      User.findOne({_id: req.user._id})
-      .select('_id email favourites info')
-      .populate('favourites')
-      .exec(function(error, user) {
-        if (!error) {         
-          var clientUser = JSON.stringify(user);
-          res.render('account', {layout: false, maps: jmaps, clientUser: clientUser, user: req.user});
-        }
+    Map.find({author: req.user._id})
+      .select('_id title')
+      .exec(function(error, maps) {
+          User.findOne({_id: req.user._id})
+            .select('_id email favourites info')
+            .populate('favourites')
+            .exec(function(error, user) {    
+                res.render('account', { maps: maps, usr: user});
       })
-    } 
   })
 };
 
 exports.getlogin =  function(req, res){
-  res.render('login', {layout: false, user: req.user, message: req.flash('error') });
+  res.render('login', { message: req.flash('error') });
 };
 
 exports.logout = function(req, res){
@@ -82,16 +76,12 @@ exports.getPublicUser = function (req, res){
   .select('_id email favourites info')
   .populate('favourites')    
   .exec(function(err, user) {
-       if (!err){
-          var publicUser = JSON.stringify(user);
-          var userId = user._id;
-              Map.find({author: req.params.id})
-                .select('_id title loc tags')
-                .exec(function(err, maps) {
-              var userMaps = JSON.stringify(maps);
-              res.render('user', {user: req.user, publicUser: publicUser, userId: userId, userMaps: userMaps});
-        })
-      }
+    Map.find({author: req.params.id})
+      .select('_id title loc tags')
+      .exec(function(err, maps) {
+        var maps = JSON.stringify(maps)
+        res.render('user', { usr: user,  maps: maps});
+      })
   })
 }
 
@@ -104,26 +94,12 @@ if (req.body.tag) {
   .where('tags').equals(tag)
   .where('author').equals(req.body.user)
   .exec(function(error, maps) {
-
-      if (error) { console.log(error);
-              }
-        else  {  
-          var jmaps = JSON.stringify(maps);
-          switch (req.params.format) {
-
-            case 'json':
-            res.send(maps);
-            break;
-
-            default:
-            res.json(maps);  
-            }  
-        }       
+        res.json(maps);  
     })
 } 
 else {
           Map.find({author: req.body.user}, function(err, maps) {
-          res.json(maps);
+            res.json(maps);
       })
   }
 }

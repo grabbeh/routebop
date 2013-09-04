@@ -13,7 +13,6 @@ var express = require('express')
 , geocoder = require('./routes/geocoder')
 , mongoose = require('mongoose')
 , moment = require('moment')
-, mongoosatic = require('mongoosastic')
 , login = require('connect-ensure-login')
 , app = express()
 , User = require('./models/user.js')
@@ -24,8 +23,10 @@ var express = require('express')
 mongoose.connect('mongodb://' + db.details.user + ':' + db.details.pass + '@' + db.details.host + ':' + db.details.port + '/' + db.details.name );
 
 function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect('/login', {layout:false})
+  if (req.isAuthenticated()) { 
+    return next(); 
+  }
+  res.redirect('/login')
 }
 
 passport.serializeUser(function(user, done) {
@@ -53,6 +54,10 @@ passport.use(new LocalStrategy(
   }
 ));
 
+app.locals.user = false;
+app.locals.lat = 51.50678771873268;
+app.locals.lng = -0.12717489055171427;
+
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
@@ -70,6 +75,8 @@ app.configure(function(){
   app.use(app.router);
 
 });
+
+// middleware
 
 // Routes
 app.get('/test', map.test);
@@ -112,18 +119,22 @@ app.post('/account', login.ensureLoggedIn('/login'), user.updateaccountinfo);
 
 app.get('/login', user.getlogin);
 
-app.post('/login', passport.authenticate('local', { successReturnToOrRedirect: '/', failureRedirect: '/login'
-    })
-  );
+app.post('/login', 
+  passport.authenticate('local'), 
+    function(req, res){
+      app.locals.user = req.user;
+      res.redirect('/');
+})
+
 app.get('/logout', user.logout);
 
 app.get('/user/:id', user.getPublicUser);
 
 app.post('/user', user.postPublicUser);
 
-app.get('/places/:id', geocoder.test);
+app.get('/places/:id', geocoder.getplace);
 
-app.get('/places/:id/:distance', geocoder.testjson);
+app.get('/places/:id/:distance', geocoder.geocoderjson);
 
 app.get('*', function(req, res){
   res.send('404, page not found', 404);
