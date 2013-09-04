@@ -1,7 +1,5 @@
 
 var express = require('express')
-, tls = require("tls")
-, fs = require("fs")
 , bcrypt = require("bcrypt")
 , MongoStore = require("connect-mongo")(express)
 , passport = require('passport')
