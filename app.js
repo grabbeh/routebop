@@ -136,7 +136,7 @@ app.post('/user', user.postPublicUser);
 
 app.get('/places/:id', geocoder.getplace);
 
-app.get('/places/:id/:distance', geocoder.geocoderjson);
+app.get('/api/:id/:distance?', geocoder.geocoderjson);
 
 app.get('*', function(req, res){
   res.send('404, page not found', 404);

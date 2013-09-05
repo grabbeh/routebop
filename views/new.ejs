@@ -1,6 +1,8 @@
 <!doctype html>
 <head>
    <%-include partials/head.ejs %>
+   <script type="text/javascript" src="//assets.transloadit.com/js/jquery.transloadit2.js"></script>
+
    <script>
       var infowindow = new google.maps.InfoWindow();
       var images = [];
@@ -237,7 +239,7 @@
            zoom: 13,
            mapTypeId: google.maps.MapTypeId.ROADMAP,
            mapTypeControlOptions: {
-                mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE, "Toner"]
+                mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE]
                    },
            disableDoubleClickZoom: true,
            panControl: false,
@@ -251,7 +253,6 @@
            streetViewControl: false
            };
        map = new google.maps.Map(document.getElementById("mymap"), mapOptions);
-       map.mapTypes.set("Toner", new google.maps.StamenMapType("toner"));
    
    // listener to add line on click
    

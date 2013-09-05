@@ -12,8 +12,8 @@ exports.getplace = function(req, res){
 };
 
 exports.geocoderjson = function(req, res){
+
   var location = req.params.id;
-   
     geo.geocode(location, function(err, data){
       var distance = req.params.distance;
       var lat = data.results[0].geometry.location.lat;

@@ -110,16 +110,8 @@
         zoom: 13,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         mapTypeControlOptions: {
-             mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE, "Toner"]
+             mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE]
         },
-        styles: [
-      {
-        "featureType": "landscape.man_made",
-        "stylers": [
-          {  }
-        ]
-      }
-    ],
         panControl: false,
         zoomControl: false,
         scaleControl: false,
@@ -131,7 +123,6 @@
         };
        
     map = new google.maps.Map(document.getElementById("mymap"), mapOptions);
-    map.mapTypes.set("Toner", new google.maps.StamenMapType("toner"));
     bounds = new google.maps.LatLngBounds();
     
     // loop through markers and add to map

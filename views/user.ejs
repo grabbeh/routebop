@@ -1,7 +1,8 @@
 <!doctype html>
 <head>
 <%-include partials/head.ejs %>
-
+    <script type="text/javascript" src="/javascripts/markerclusterer.js"></script>
+    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js"></script>
 </head>
 <body>
 <div id="maincontainer">
@@ -83,18 +84,8 @@ var mapOptions = {
             zoom: 13,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             mapTypeControlOptions: {
-                mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE, "Toner"]
+                mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE]
             },
-            styles: [
-      {
-        "featureType": "landscape.man_made",
-        "stylers": [
-          { "hue": "#00b2ff" },
-          { "saturation": 33 },
-          { "gamma": 1.77 }
-        ]
-      }
-    ],
             panControl: false,
             zoomControl: false,
             scaleControl: false,
@@ -107,7 +98,6 @@ var mapOptions = {
         };
     
         map = new google.maps.Map(document.getElementById("mymap"), mapOptions);
-        map.mapTypes.set("Toner", new google.maps.StamenMapType("toner"));
         bounds = new google.maps.LatLngBounds();
     
        // closing create map function
