@@ -27,8 +27,12 @@ exports.home = function(req, res){
 // get route for new map - providing default values if no queries are available
 
 exports.new = function(req, res){
-  res.locals.lat = req.query.lat;
-  res.locals.lng = req.query.lng;
+  if (req.query.lat === undefined) {
+    res.locals.coords = {lat: 51.50678771873268, lng: -0.12717489055171427}
+  }
+else { 
+    res.locals.coords = {lat: req.query.lat, lng: req.query.lng};
+  }
   res.render('new')
 };
 
@@ -79,9 +83,9 @@ if (req.body.tag) {
   box = [[mapbounds[0], mapbounds[1]], [mapbounds[2], mapbounds[3]]];
   Map.ensureIndexes;
   Map.find({loc:{$within:{$box:box}}})
-  .where('tags').equals(tag)
-  .select('_id title loc tags')
-  .exec(function(err, maps) {
+    .where('tags').equals(tag)
+    .select('_id title loc tags')
+    .exec(function(err, maps) {
       res.json(maps);  
   })
 }
@@ -128,6 +132,7 @@ exports.show = function(req, res) {
             break;
 
             default:
+              console.log(map.images);
               res.render('show', {map : map, jmap: jmap, fav: fav, edit: edit})
             } 
            

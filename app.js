@@ -53,8 +53,6 @@ passport.use(new LocalStrategy(
 ));
 
 app.locals.user = false;
-app.locals.lat = 51.50678771873268;
-app.locals.lng = -0.12717489055171427;
 
 app.configure(function(){
   app.set('views', __dirname + '/views');

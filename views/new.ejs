@@ -231,11 +231,9 @@
    // function to create basic map on load and add event listeners
    
    function create_map() {
-   
-       var startLat = <%- lat %>;
-       var startLng = <%- lng %>;
+
        var mapOptions = {
-           center: new google.maps.LatLng(startLat, startLng),
+           center: new google.maps.LatLng(<%= coords.lat %>, <%= coords.lng %>),
            zoom: 13,
            mapTypeId: google.maps.MapTypeId.ROADMAP,
            mapTypeControlOptions: {

@@ -46,10 +46,10 @@
                         <% } %>
                     </div>
                     <div class="fourcol last">
-                        <% if (map.images > 0) { %>
-                            <div><b>Images</b></div>
+                        <% if (map.images.length) { %>
+                            <div class="imageHeader"><b>Images</b></div>
                             <% map.images.forEach(function(image){ %>
-                                <span><a href="<%=image.mainurl %>"><img src="<%= image.thumburl %>"></a></span>
+                                <span><a href="<%=image.mainurl %>"><img class="thumbnail" src="<%= image.thumburl %>"></a></span>
                             <% }) %>
                         <% } %>
                     </div>
