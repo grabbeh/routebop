@@ -42,7 +42,7 @@
           <div class="fourcol last"><div class="title"><p>Favourites</p></div>
           <ul class="homelist">
             <% usr.favourites.forEach(function(favourite){ %>
-                 <li><%= favourite.title %><a href="/show/<%= favourite._id%>">| Route </a><a href="/delfav/<%= favourite._id %>"> | De-favourite </a></li>
+                 <li><%= favourite.title %><a href="/show/<%= favourite._id%>"> | Route </a><a href="/delfav/<%= favourite._id %>"> | De-favourite </a></li>
             <% }) %>
 
           </ul>
