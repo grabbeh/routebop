@@ -62,11 +62,21 @@
 </body>
 </html>
 <script>
-    var map;
+    var gmap;
     var arrayofwaypoints = [];
     var infowindow = new google.maps.InfoWindow();
     var jmap = <%- jmap %>;
+        
+    $(document).ready(function () {
+    create_blankmap(jmap);
+    addMarkersToMap(jmap);
+    addWaypointsToMap(jmap);
     
+    $('#favourite').click(function() { 
+        favouritePost();
+        });
+    });
+
     function favouritePost() {
         var obj = {
             favourite: jmap._id,
@@ -84,26 +94,9 @@
             }
         });
     };
-    
-    function placeMarker(location, descriptions) {
-      var newmarker = new google.maps.Marker({
-          position: location,
-          map: map,
-          flat: true
-          });
 
-        google.maps.event.addListener(newmarker, 'click', function() {
-        infowindow.setContent(descriptions)
-        infowindow.open(map, newmarker);
-        }); 
-    
-        $("<li>").html(descriptions + "</li>").click(function(){
-            infowindow.setContent(descriptions);
-            infowindow.open(map, newmarker); 
-        }).appendTo("#desclist");
-    };
-    
-    function create_blankmap(){
+
+    function create_blankmap(jmap){
     
     var mapOptions = {
         center: new google.maps.LatLng(jmap.waypoints[0].lat, jmap.waypoints[0].lon),
@@ -122,55 +115,68 @@
         streetViewControl: true
         };
        
-    map = new google.maps.Map(document.getElementById("mymap"), mapOptions);
+    gmap = new google.maps.Map(document.getElementById("mymap"), mapOptions);
     bounds = new google.maps.LatLngBounds();
     
-    // loop through markers and add to map
-    
-    for ( var i = 0, j = jmap.places.length; i < j; i++ ) {
-      var marker = new google.maps.LatLng(jmap.places[i].lat, jmap.places[i].lon);
-        bounds.extend(marker);
-        var descs = jmap.markerdescs[i];
-        placeMarker(marker, descs);
     };
+    
+    function placeMarker(location, descriptions) {
+      var newmarker = new google.maps.Marker({
+          position: location,
+          map: gmap,
+          flat: true
+          });
+
+        google.maps.event.addListener(newmarker, 'click', function() {
+        infowindow.setContent(descriptions)
+        infowindow.open(map, newmarker);
+        }); 
+    
+        $("<li>").html(descriptions + "</li>").click(function(){
+            infowindow.setContent(descriptions);
+            infowindow.open(gmap, newmarker); 
+        }).appendTo("#desclist");
+    };
+
+    // loop through markers and add to map
+    function addMarkersToMap(jmap){
+        for ( var i = 0, j = jmap.places.length; i < j; i++ ) {
+            var marker = new google.maps.LatLng(jmap.places[i].lat, jmap.places[i].lon);
+            bounds.extend(marker);
+            var descs = jmap.markerdescs[i];
+            placeMarker(marker, descs);
+        };
+    }
     
     // loop through waypoints and add to array of waypoints which is then added to map
+    function addWaypointsToMap(jmap){
+        for ( var i = 0, j = jmap.waypoints.length; i < j; i++) {
+            var x = new google.maps.LatLng(jmap.waypoints[i].lat, jmap.waypoints[i].lon);
+            arrayofwaypoints.push(x);
+            bounds.extend(x);
+        };
+        gmap.fitBounds(bounds);
+        setPolyline();
+    }
     
-    for ( var i = 0, j = jmap.waypoints.length; i < j; i++) {
-        var x = new google.maps.LatLng(jmap.waypoints[i].lat, jmap.waypoints[i].lon);
-        arrayofwaypoints.push(x);
-        bounds.extend(x);
-      };
+    function setPolyline(){
+        var lineSymbol = {
+          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        };
     
-    // add polyline to map
-    var lineSymbol = {
-      path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-    };
-    
-    var route = new google.maps.Polyline({
-        path: arrayofwaypoints,
-        strokeOpacity: 0.7,
-        strokeWeight: 3,
-        strokeColor: '#FF0000',
-        icons: [{
-        icon: lineSymbol,
-        offset: '0',
-        repeat: '150px'
-      }],
-      });
-    route.setMap(map);
-    map.fitBounds(bounds);
-
-    // end of create blankmap function
-    
-    };
-    
-    $(document).ready(function () {
-    create_blankmap();
-    
-    $('#favourite').click(function() { 
-        favouritePost();
+        var route = new google.maps.Polyline({
+            path: arrayofwaypoints,
+            strokeOpacity: 0.7,
+            strokeWeight: 3,
+            strokeColor: '#FF0000',
+            icons: [{
+            icon: lineSymbol,
+            offset: '0',
+            repeat: '150px'
+            }],
         });
-    });
-    
+        route.setMap(gmap);
+}
+
+
 </script>

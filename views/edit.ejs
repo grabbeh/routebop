@@ -4,7 +4,7 @@
     <script type="text/javascript" src="//assets.transloadit.com/js/jquery.transloadit2.js"></script>
     <script>
         var images = [];
-        var map;
+        var gmap;
         var geocoder;
         var places = [];
         var poly;
@@ -181,7 +181,7 @@
           
         var obj = {
             images: images,
-            id: mapp._id,
+            id: jmap._id,
             loc: loc,
             locTwo: locTwo,
             waypoints: newData,
@@ -203,7 +203,7 @@
             complete: function (data) {
                   $('#output').html(data.message);
                     setTimeout(function() {
-              window.location.href = "/show/" + mapp._id;
+              window.location.href = "/show/" + jmap._id;
                     }, 2000);
                 }
             });
@@ -214,10 +214,10 @@
     
     function create_map() {
     
-    mapp = <%- map %>;
+    jmap = <%- map %>;
 
     var mapOptions = {
-        center: new google.maps.LatLng(mapp.waypoints[0].lat, mapp.waypoints[0].lon),
+        center: new google.maps.LatLng(jmap.waypoints[0].lat, jmap.waypoints[0].lon),
         zoom: 13,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         mapTypeControlOptions: {
@@ -260,8 +260,8 @@
     // show map functions
     // loop through markers and add to map using placeMarker function
     
-    for ( var i = 0, j = mapp.places.length; i < j; i++ ) {
-        var marker = new google.maps.LatLng(mapp.places[i].lat, mapp.places[i].lon)
+    for ( var i = 0, j = jmap.places.length; i < j; i++ ) {
+        var marker = new google.maps.LatLng(mapp.places[i].lat, jmap.places[i].lon)
         var descs = mapp.markerdescs[i];
         bounds.extend(marker);
         placeMarker(marker, descs);
@@ -269,8 +269,8 @@
     
     // loop through waypoints and add to array of waypoints which is then added to map
     
-    for ( var i = 0, j = mapp.waypoints.length; i < j; i++) {
-            var x = new google.maps.LatLng(mapp.waypoints[i].lat, mapp.waypoints[i].lon);
+    for ( var i = 0, j = jmap.waypoints.length; i < j; i++) {
+            var x = new google.maps.LatLng(jmap.waypoints[i].lat, jmap.waypoints[i].lon);
             cpts = poly.getPath();
             cpts.push(x);
             bounds.extend(x);
@@ -279,23 +279,23 @@
     addDescriptions();
     
     // add title and description to page
-    if (mapp.tags[0] === ""){
+    if (jmap.tags[0] === ""){
      $('#tags').append("");
     }
     else {
-        var tagsString = mapp.tags.join(" ");
+        var tagsString = jmap.tags.join(" ");
         $('#tags').val(tagsString);
     }
     
-    $("#description").val(mapp.description);
-    $("#title").val(mapp.title);
-    $('#lengthparent').append("<p>" + "Distance: " + mapp.distance + " km" + "</p>");
+    $("#description").val(jmap.description);
+    $("#title").val(jmap.title);
+    $('#lengthparent').append("<p>" + "Distance: " + jmap.distance + " km" + "</p>");
     
-    if (mapp.images.length) {
-    for (var i = 0; i < mapp.images.length; i++) {
-           var thumburl = mapp.images[i].thumburl;
-           var mainurl = mapp.images[i].mainurl;
-           images.push(mapp.images[i]);
+    if (jmap.images.length) {
+    for (var i = 0; i < jmap.images.length; i++) {
+           var thumburl = jmap.images[i].thumburl;
+           var mainurl = jmap.images[i].mainurl;
+           images.push(jmap.images[i]);
            $('#thumb').append("<a href=" + mainurl + ">" + "<img src=" + thumburl + "><span>x</span></a>");
            $('#thumb').find('span').addClass('removeImage');
            };
@@ -406,7 +406,7 @@
     
     
     function addDescriptions() {
-        var mdescs = mapp.markerdescs;
+        var mdescs = jmap.markerdescs;
         for (var i = 0; i < mdescs.length; i++) {
           $('#newcontentparent').append('<p><input class=\"markerdescription\" type="text\" value=\"' + mdescs[i] + '\"' + '></p>');
           };

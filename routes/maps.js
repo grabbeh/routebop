@@ -132,7 +132,6 @@ exports.show = function(req, res) {
             break;
 
             default:
-              console.log(map.images);
               res.render('show', {map : map, jmap: jmap, fav: fav, edit: edit})
             } 
            

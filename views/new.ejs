@@ -189,6 +189,7 @@
          collectContent();
          convertWaypoints(cpts.b);
          convertPlaces(markersarray);
+         addDescToPlaceObj(markerdescs, places);
          var distance = poly.inKm().toFixed(2);
          var loc = [];
          var locTwo = [];
@@ -250,7 +251,7 @@
            },
            streetViewControl: false
            };
-       map = new google.maps.Map(document.getElementById("mymap"), mapOptions);
+       gmap = new google.maps.Map(document.getElementById("mymap"), mapOptions);
    
    // listener to add line on click
    
@@ -271,9 +272,9 @@
          }
    
    poly = new google.maps.Polyline(polyOptions);
-   poly.setMap(map);
+   poly.setMap(gmap);
    
-   google.maps.event.addListener(map, 'click', function(event) {
+   google.maps.event.addListener(gmap, 'click', function(event) {
    update_timeout = setTimeout(function(){
            cpts = poly.getPath(); 
            cpts.push(event.latLng);
@@ -284,7 +285,7 @@
     
    // listener to add marker on dblclick
    
-   google.maps.event.addListener(map,'dblclick', function(event) {
+   google.maps.event.addListener(gmap,'dblclick', function(event) {
        clearTimeout(update_timeout);
        placeMarker(event.latLng);
        $('#newcontentparent').append('<p><input class="markerdescription" type="text"></p>')
@@ -302,7 +303,7 @@
    function placeMarker(location) {
      var marker = new google.maps.Marker({
          position: location,
-         map: map,
+         map: gmap,
          flat: true,
          draggable: true
      });
@@ -310,7 +311,7 @@
        google.maps.event.addListener(marker, 'click', function() {
           infowindow.setContent("Description<p><input></p>");
           infowindow.close();
-          infowindow.open(map, marker);   
+          infowindow.open(gmap, marker);   
        });
    
      markersarray.push(marker);
@@ -340,7 +341,7 @@
    
    function geolocate(pos){
        center = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-       map.setCenter(center);
+       gmap.setCenter(center);
    };
    
    function geolocateError(error){
@@ -354,7 +355,7 @@
         geocoder = new google.maps.Geocoder();
         geocoder.geocode({'address': paddress}, function(results, status){
            if (status == google.maps.GeocoderStatus.OK) {
-               map.setCenter(results[0].geometry.location);
+               gmap.setCenter(results[0].geometry.location);
            }
            else{
                alert("Sorry, we didn't recognise this location");
@@ -402,10 +403,20 @@
        var latlngobject = arrayofplaces[i].getPosition();
        placeobj['lat'] = latlngobject.lat();
        placeobj['lon'] = latlngobject.lng();
+
        places.push(placeobj);
    
      };
-     return places;
+      return places;
+   }
+
+   function addDescToPlaceObj(descriptions, places){
+      descriptions.forEach(function(desc){
+          places.forEach(function(place){
+              place['desc'] = desc;
+          })
+      })
+      return places;
    }
    
 </script>

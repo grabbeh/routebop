@@ -44,7 +44,7 @@
 </html>
 
 <script>
-var map;
+var gmap;
 var markersarray = [];
 var mc;
 var maps = <%- maps %>
@@ -53,24 +53,24 @@ $(document).ready(function() {
     // initial create map function to push map bounds, add event listeners - for drag on push.
     create_map();
     processMapData(maps);
-    mc = new MarkerClusterer(map, markersarray);
-    map.fitBounds(bounds);
+    mc = new MarkerClusterer(gmap, markersarray);
+    gmap.fitBounds(bounds);
 
     $('#maptags').delegate('li', 'click', function(){
             var submittag = $(this).text().trim();        
-            var postbounds = map.getBounds();
+            var postbounds = gmap.getBounds();
             processMapBounds(postbounds);
             ajaxTagPost(boxarray, submittag);
-            google.maps.event.clearListeners(map, 'idle');
+            google.maps.event.clearListeners(gmap, 'idle');
             addTagListeners();
             $('#showalltagsbutton').removeClass('hide-element');
         })
     
         $('#showalltagsbutton').click(function(){
-            var postbounds = map.getBounds();
+            var postbounds = gmap.getBounds();
             processMapBounds(postbounds);
             ajaxBoundsPost(boxarray);
-            google.maps.event.clearListeners(map, 'idle');
+            google.maps.event.clearListeners(gmap, 'idle');
             addMapListeners();
             $('#showalltagsbutton').addClass('hide-element');
         })
@@ -97,7 +97,7 @@ var mapOptions = {
             streetViewControl: false
         };
     
-        map = new google.maps.Map(document.getElementById("mymap"), mapOptions);
+        gmap = new google.maps.Map(document.getElementById("mymap"), mapOptions);
         bounds = new google.maps.LatLngBounds();
     
        // closing create map function
@@ -124,7 +124,7 @@ var mapOptions = {
     function placeMarker(location, title) {
         var marker = new google.maps.Marker({
             position: location,
-            map: map,
+            map: gmap,
             flat: true
         });
     
@@ -135,13 +135,13 @@ var mapOptions = {
             if (infowindow.open) {
                 infowindow.close();
             }
-            google.maps.event.clearListeners(map, 'idle');
-            infowindow.open(map, marker);   
+            google.maps.event.clearListeners(gmap, 'idle');
+            infowindow.open(gmap, marker);   
         });
     
         $("<li>").html(title + "</li>").click(function(){
-            google.maps.event.clearListeners(map, 'idle');
-            infowindow.open(map, marker);     
+            google.maps.event.clearListeners(gmap, 'idle');
+            infowindow.open(gmap, marker);     
     
             //map.panTo(marker.getLatLng());
           }).appendTo("#showroutelist");
@@ -158,17 +158,17 @@ var mapOptions = {
     };
     
     function addMapListeners(){
-            google.maps.event.addListener(map, "idle", function(){
-            var postbounds = map.getBounds();
+            google.maps.event.addListener(gmap, "idle", function(){
+            var postbounds = gmap.getBounds();
             processMapBounds(postbounds);
             ajaxBoundsPost(boxarray);
        })
     }
     
     function addTagListeners(){
-            google.maps.event.addListener(map, "idle", function(){
+            google.maps.event.addListener(gmap, "idle", function(){
             var newtag = $('#maptags').children().text().trim();     
-            var postbounds = map.getBounds();
+            var postbounds = gmap.getBounds();
             processMapBounds(postbounds);
             ajaxTagPost(boxarray, newtag);
        })
@@ -196,8 +196,8 @@ var mapOptions = {
         return bounds;
     }
     else {
-        var lat = map.getCenter().lat();
-        var lng = map.getCenter().lng();
+        var lat = gmap.getCenter().lat();
+        var lng = gmap.getCenter().lng();
         var getparams = $.param({lat:lat, lng:lng});
         var locationurl = "Sorry - no routes for this place - maybe you'd like to add one <a href='/new?" + getparams + "'>here</a>";
         $("<li>").html(locationurl).appendTo("#showroutelist");
@@ -256,7 +256,7 @@ var mapOptions = {
             success: function(data) {
                 clearOverlays();
                 processMapData(data);
-                mc = new MarkerClusterer(map, markersarray);
+                mc = new MarkerClusterer(gmap, markersarray);
             }
         });
     };
@@ -277,7 +277,7 @@ var mapOptions = {
             success: function(data) {
                 clearOverlays();
                 processTagData(data);
-                mc = new MarkerClusterer(map, markersarray);
+                mc = new MarkerClusterer(gmap, markersarray);
                 $('#maptags').append("<li> " + tag + " </li>")
             }
         });
