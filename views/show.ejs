@@ -67,7 +67,7 @@
     window.center = new google.maps.LatLng(jmap.waypoints[0].lat, jmap.waypoints[0].lon)
     
     $(document).ready(function () {
-        map.createMap(jmap, 'mymap', center); 
+        map.createMap('mymap', center, map.returnjmap); 
         map.addMarkersToMap(jmap);
         map.addWaypointsToMap(jmap);
         map.addFavouriteClick('#favourite');

@@ -39,6 +39,7 @@ else {
 // saves map following post data from /new
 
 exports.submitmap = function(req, res) {
+
   var day = moment(new Date());
   var formattedDate = day.format("MMMM Do YYYY, h:mm:ss a");
   if (!req.user) { id = "guest" }
@@ -58,9 +59,11 @@ exports.submitmap = function(req, res) {
           distance: req.body.distance,
           tags: req.body.tags,
           }).save(function(err, map) {
+            
               var data = {};
               data['message'] = "Route saved - thank you";
               data['id'] = map._id;
+
               res.json(data);
           });
 };
@@ -106,11 +109,12 @@ else {
 // Locates individual map on basis of ID in url before returning map, stringifying and sending to server
 
 exports.show = function(req, res) {
+
     var mapid = req.params.id;
     var fav = false;
     var edit = false;
     var usermap = false;
-    Map.findOne({_id: req.params.id}, function(err, map) {
+    Map.findOne({_id: mapid}, function(err, map) {
         var mapid = map._id;
         var jmap = JSON.stringify(map);
             if (req.user) {
@@ -141,12 +145,15 @@ exports.show = function(req, res) {
 // adds map to user's favourites and increments favourite count for particular map.
 
 exports.favourite = function(req, res) {
+
     Map.findOne({_id: req.body.favourite}, function(err, map){
-        if (!req.user) {res.send("Please login to add this route to your account");}
+        if (!req.user) {var data = {}; data['message'] = "Please login to add this route to your account"; res.json(data);}
             map.update({favourited: req.body.plusone}, {upsert: true}, function(err) {
               User.findOne({_id: req.user._id}, function(err, user) {
                   user.update({$addToSet: {favourites: req.body.favourite}}, {upsert: true}, function(err) {
-                       res.send("Thank you for favouriting this route")
+                       var data = {};
+                       data['message'] = "Thanks for favouriting this route";
+                       res.json(data)
                       })
                   })    
                })

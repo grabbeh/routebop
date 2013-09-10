@@ -4,18 +4,12 @@
    <script type="text/javascript" src="//assets.transloadit.com/js/jquery.transloadit2.js"></script>
    <script src="/javascripts/map.js" type="text/javascript"></script>
    <script src="/javascripts/imageController.js" type="text/javascript"></script>
+   <script src="/javascripts/geocodeController.js" type="text/javascript"></script>
    <script>
-      var infowindow = new google.maps.InfoWindow();
-      
+
       var gmap;
-      var geocoder;
-      var mapwaypoints = [];
-      var places = [];
-      var poly;
-      var mapmarkers = [];
       var update_timeout = null;
-      var markerdescriptions = [];
-    
+      
    </script>
 </head>
 <body>
@@ -57,234 +51,25 @@
 </body>
 </html>
 <script>
-var imageCtrl = new imageController;
-var map = new Map;
+window.imageCtrl = new imageController;
+window.map = new Map;
+window.geocodeCtrl = new geocodeController;
+window.center = new google.maps.LatLng(<%= coords.lat %>, <%= coords.lng %>);
 
 $(document).ready(function(){
+
     imageCtrl.init();
-    // loads basic map with set centre
-    create_map();
-   
-       // click function to run geolocation on click
-   
-        $("#geolocate").click(function() {
-                   navigator.geolocation.getCurrentPosition(geolocate, geolocateError,{timeout:5000});
-               });
-   
-       $('#userlocation').keypress(function (e) {
-             if (e.which == 13) {
-               geocodeAddress();   
-             }
-           });
-   
-       $('#userlocationsubmit').click(function(){
-       geocodeAddress();
-       });
-   
-       // remove all markers and polylines
-   
-       $("#removeall").click(function() {
-           $('#newcontentparent').children().remove().end();
-           clearOverlays();
-           mapwaypoints.clear(); 
-           places.splice(0, places.length);
-       });
-   
-       // remove last marker 
-   
-       $("#removelastmarker").click(function(){
-           var lastmarker = _.last(mapmarkers);
-           lastmarker.setMap(null);
-           mapmarkers.pop();
-           places.pop();
-           $('#newcontentparent').children().last().remove().end();
-       });
-   
-       $('#removelastline').click(function(){
-           mapwaypoints.pop(); 
 
-       });
-   
+    map.createMap('mymap', center, map.returnNewMapOptions(center)); 
+    map.setPolyline(map.returnPolyLineNewOptions());
+    map.addGmapListeners();
+    map.addMarkerAndPolylineEdit();
 
-   // click function to submit map by creating 'obj' which incorporates 
-   // clickpoints and markers
+    geocodeCtrl.init('#geolocate', '#userlocation', '#userlocationsubmit')
    
-   $('#user-submit').click(function () {
-   
-     var tags = $('#tags').val().split(" ");
-     var newtitle = $('#title').val();
-     if (newtitle.length < 1) {
-       alert('Please insert a title');
-       return;
-     }
-   
-      if (mapwaypoints.b.length < 1){
-         alert('Please insert at least one waypoint')
-         return;
-      }   
-         collectContent();
-         convertWaypoints(mapwaypoints.b);
-         convertPlaces(mapmarkers);
-
-         var loc = createLoc(mapwaypoints.b[0].lat(), mapwaypoints.b[0].lng());
-         var locTwo = createLocTwo(mapwaypoints.b[0].lat(), mapwaypoints.b[0].lng());
-    
-         var obj = {
-           images: images,
-           loc: loc,
-           locTwo: locTwo,
-           waypoints: convertedWaypoints,
-           places: places,
-           title: $('#title').val(),
-           description: $('#description').val(),
-           tags: tags,
-           markerdescs: markerdescs,
-           distance: poly.inKm().toFixed(2)
-           };
-   
-       $.ajax({
-           url: "/new",
-           type: "POST",
-           contentType: "application/json",
-           processData: false,
-           data: JSON.stringify(obj),
-           success: function (data) {
-                 $('#output').html(data.message); 
-                   setTimeout(function() {
-                   window.location.href = "/show/" + data.id;
-                   }, 1000);
-               }
-           });
-       });
-   });
-   
-   // function to create basic map on load and add event listeners
-   
-   function create_map() {
-
-       var mapOptions = {
-           center: new google.maps.LatLng(<%= coords.lat %>, <%= coords.lng %>),
-           zoom: 13,
-           mapTypeId: google.maps.MapTypeId.ROADMAP,
-           mapTypeControlOptions: {
-                mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE]
-                   },
-           disableDoubleClickZoom: true,
-           panControl: false,
-           zoomControl: false,
-           scaleControl: false,
-           zoomControl: true,
-           draggableCursor: "default",
-           zoomControlOptions: {
-             style: google.maps.ZoomControlStyle.SMALL
-           },
-           streetViewControl: false
-           };
-       gmap = new google.maps.Map(document.getElementById("mymap"), mapOptions);
-   
-   // listener to add line on click
-   
-       var lineSymbol = {
-         path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
-       };
-   
-       var polyOptions = {
-         icons: [{
-           icon: lineSymbol,
-           offset: '0',
-           repeat: '100px'
-         }],
-         strokeOpacity: 0.5,
-         strokeWeight: 3,
-         strokeColor: "#FF0000",
-         editable: true
-         }
-   
-   poly = new google.maps.Polyline(polyOptions);
-   poly.setMap(gmap);
-   
-   google.maps.event.addListener(gmap, 'click', function(event) {
-   update_timeout = setTimeout(function(){
-           mapwaypoints = poly.getPath(); 
-           mapwaypoints.push(event.latLng);
-           var distance = poly.inKm().toFixed(2);
-           $('#lengthparent').text("Distance").append("<p>"+ distance + " km" + "</p>");
-       }, 400);
+    map.collectMapAndSendToServer();
    });
     
-   // listener to add marker on dblclick
-   
-   google.maps.event.addListener(gmap,'dblclick', function(event) {
-       clearTimeout(update_timeout);
-       placeMarker(event.latLng);
-       $('#newcontentparent').append('<p><input class="markerdescription" type="text"></p>')
-     });
-   
-   // listener to add marker on polyline click
-   
-   google.maps.event.addListener(poly, 'click', function(event) {
-       placeMarker(event.latLng);
-       $('#newcontentparent').append('<p><input class="markerdescription" type="text"></p>')
-   });
-   // closing create map function
-   };
-   
-   function placeMarker(location) {
-     var marker = new google.maps.Marker({
-         position: location,
-         map: gmap,
-         flat: true,
-         draggable: true
-     });
-     mapmarkers.push(marker);
-   };
-   
-   // function to clear markers
-   
-   function clearOverlays() {
-     if (mapmarkers) {
-       for (i in mapmarkers) {
-         mapmarkers[i].setMap(null);
-       }
-       mapmarkers.length = 0;
-     }
-   };
-   
-   // function to collect marker descriptions
-   
-   function collectContent() {
-        $('.markerdescription').each(function(i){
-           var content = $(this).val();
-           markerdescs.push(content);
-       })
-   } ;
-   
-   // function to centre map if user geolocates
-   
-   function geolocate(pos){
-       center = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-       gmap.setCenter(center);
-   };
-   
-   function geolocateError(error){
-           alert(error.code)
-       }
-   
-   // geocode function if user inputs location
-   
-   function geocodeAddress(){
-        var paddress = $("#userlocation").val();
-        geocoder = new google.maps.Geocoder();
-        geocoder.geocode({'address': paddress}, function(results, status){
-           if (status == google.maps.GeocoderStatus.OK) {
-               gmap.setCenter(results[0].geometry.location);
-           }
-           else {
-               alert("Sorry, we didn't recognise this location");
-           }
-        });
-    };
-   
    google.maps.LatLng.prototype.kmTo = function(a){ 
        var e = Math, ra = e.PI/180; 
        var b = this.lat() * ra, c = a.lat() * ra, d = b - c; 
@@ -302,48 +87,5 @@ $(document).ready(function(){
        return dist; 
      } 
    
-   
-   function convertWaypoints(arrayofwaypoints) {
-       if (!arrayofwaypoints){
-         alert('Please provide some waypoints');
-       }
-       convertedWaypoints = [];
-       for(var i = 0; i < arrayofwaypoints.length; i++) {
-           var obj = {};
-           obj['lat'] = arrayofwaypoints[i].lat();
-           obj['lon'] = arrayofwaypoints[i].lng();
-           convertedWaypoints.push(obj);
-       }
-       return convertedWaypoints; 
-   };    
-   
-   function convertPlaces(arrayofplaces) {
-   
-     places = [];
-     for (var i = 0; i < arrayofplaces.length; i++) {
-       var placeobj = {};
-       var latlngobject = arrayofplaces[i].getPosition();
-       placeobj['lat'] = latlngobject.lat();
-       placeobj['lon'] = latlngobject.lng();
-
-       places.push(placeobj);
-   
-     };
-      return places;
-   }
-
-   function createLoc(lat, lon){
-      var loc = [];
-      loc[0] = lat;
-      loc[1] = lon;
-      return loc;
-   }
-
-   function createLocTwo(lat, lon){
-      var locTwo = [];
-      locTwo[0] = lon;
-      locTwo[1] = lat;
-      return locTwo;
-   }
-   
+  
 </script>

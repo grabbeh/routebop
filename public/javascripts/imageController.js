@@ -1,7 +1,7 @@
 
 function imageController(){
     var that = this;
-    images = [];
+    var images = [];
 
     this.init = function(){
       $('#MyForm').transloadit(imageCtrl.transloaditOptions);
