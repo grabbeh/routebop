@@ -4,14 +4,11 @@ function Map(){
     var bounds;
     var mapwaypoints = [];
     var mapmarkers = [];
-
+    
 	this.createMap = function(jmap, elem, center){
 	    gmap = new google.maps.Map(document.getElementById(elem), this.returnMapOptions(center));
 	    bounds = new google.maps.LatLngBounds();
-       
-        this.addMarkersToMap(jmap);
-        this.addWaypointsToMap(jmap);
-        this.addFavouriteClick('#favourite');
+        infowindow = new google.maps.InfoWindow();
     };
 
 	this.sendToServer = function(postdata, posturl, completefunction){
@@ -36,37 +33,21 @@ function Map(){
         });
     };
 
-    var mapOptions = {
-
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        mapTypeControlOptions: {
-             mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE]
-        },
-        panControl: false,
-        zoomControl: false,
-        scaleControl: false,
-        zoomControl: true,
-        zoomControlOptions: {
-          style: google.maps.ZoomControlStyle.SMALL
-        },
-        streetViewControl: true
-        };
-
-	this.returnMapOptions = function(center){
+    this.returnMapOptions = function(center){
         mapOptions.center = center;
 		return mapOptions;
 	};
 
-	var lineSymbol = {
-          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-    };
-
-    this.returnLineSymbolOptions = function(){
+	this.returnLineSymbolOptions = function(){
     	return lineSymbol;
     }
 
      this.returnPolyLineOptions = function(){
      	return polylineOptions;
+     }
+
+     this.returnMapMarker = function(i){
+        return mapmarkers[i]
      }
 
 	this.setPolyline = function(){
@@ -110,10 +91,11 @@ function Map(){
     };
 
     this.addDescription = function(location, desc) {
+        var that = this;
     	$('.showlist').append("<li>" + desc + "</li>")
         $('.showlist li').click(function(){
             var index = $('.showlist li').index(this);
-            google.maps.event.trigger(mapmarkers[index], "click")
+            google.maps.event.trigger(that.returnMapMarker(index), "click")
     	});
     };
 
@@ -127,7 +109,16 @@ function Map(){
         });
     };
 
-var polylineOptions = {
+    this.addDescToPlaceObj = function(descriptions, places){
+      descriptions.forEach(function(desc){
+          places.forEach(function(place){
+              place['desc'] = desc;
+          })
+      })
+      return places;
+   }
+
+    var polylineOptions = {
             path: mapwaypoints,
             strokeOpacity: 0.7,
             strokeWeight: 3,
@@ -138,6 +129,26 @@ var polylineOptions = {
             repeat: '150px'
          }]
      }
+
+    var lineSymbol = {
+          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+    };
+
+    var mapOptions = {
+
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeControlOptions: {
+             mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE]
+        },
+        panControl: false,
+        zoomControl: false,
+        scaleControl: false,
+        zoomControl: true,
+        zoomControlOptions: {
+          style: google.maps.ZoomControlStyle.SMALL
+        },
+        streetViewControl: true
+        };
 
 
 };

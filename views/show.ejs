@@ -64,11 +64,14 @@
 <script>
     window.jmap = <%- jmap %>;
     window.map = new Map;
-    window.infowindow = new google.maps.InfoWindow();
     window.center = new google.maps.LatLng(jmap.waypoints[0].lat, jmap.waypoints[0].lon)
     
     $(document).ready(function () {
-        map.createMap(jmap, 'mymap', center);        
+        map.createMap(jmap, 'mymap', center); 
+        map.addMarkersToMap(jmap);
+        map.addWaypointsToMap(jmap);
+        map.addFavouriteClick('#favourite');
+
     });
    
 </script>

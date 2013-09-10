@@ -2,18 +2,19 @@
 <head>
    <%-include partials/head.ejs %>
    <script type="text/javascript" src="//assets.transloadit.com/js/jquery.transloadit2.js"></script>
-
+   <script src="/javascripts/map.js" type="text/javascript"></script>
+   <script src="/javascripts/imageController.js" type="text/javascript"></script>
    <script>
       var infowindow = new google.maps.InfoWindow();
-      var images = [];
-      var map;
+      
+      var gmap;
       var geocoder;
-      var cpts = [];
+      var mapwaypoints = [];
       var places = [];
       var poly;
-      var markersarray = [];
+      var mapmarkers = [];
       var update_timeout = null;
-      var markerdescs = [];
+      var markerdescriptions = [];
     
    </script>
 </head>
@@ -35,7 +36,7 @@
                   <p><input class="newinputtwo" id="title" type="text" /></p>
                   <p>Description</p>
                   <textarea id="description" rows="4" type="text"></textarea>
-                  <p>Tags (separated by a space please)</p>
+                  <p>Tags</p>
                   <input class="newinputtags" id="tags" type="text" />
                </div>
                <div class="fourcol">
@@ -56,75 +57,13 @@
 </body>
 </html>
 <script>
-   $(document).ready(function(){
+var imageCtrl = new imageController;
+var map = new Map;
 
-        $('#thumb').delegate('span', 'click', function(e){
-          e.preventDefault();
-          if (images.length === 1){
-            images = [];
-          }
-          else {
-          var id = $(this).index();
-          images.splice(id, 1);
-        }
-        $(this).parent().remove();
-        })
-
-        $('#MyForm').transloadit({
-           wait: true,
-           autoSubmit: false,
-           modal: false,
-           onProgress: function(bytesReceived, bytesExpected){
-             var result = bytesReceived / bytesExpected;
-             if (result !== NaN) {
-             $('#progress').text("Progress: " + (bytesReceived / bytesExpected * 100).toFixed(2)+'%');
-           }
-           },
-           onSuccess: function(assembly){
-            $('#progress').text("");
-             var turl = assembly.results.thumb[0].url;
-             var thumburl = turl.replace('http', 'https');
-             var murl = assembly.results[':original'][0].url;
-             var mainurl = murl.replace('http', 'https');
-             $('#thumb').append("<a href=" + mainurl + ">" + "<img src=" + thumburl + "><span>x</span></a>");
-             $('#thumb').find('span').addClass('removeImage');
-             var imgUrls = {};
-             imgUrls['thumburl'] = thumburl;
-             imgUrls['mainurl'] = mainurl;
-             images.push(imgUrls);
-           }
-        });
-
-        $('#fileupload').on('change', function(){
-          $('#photoUpload').click();
-        });
-
-       $('#imageUploadButton').click(function(){
-   
-         if($('#newcontentparent').is(':visible')){
-           $('#imageUploadButton').addClass('bold');
-           $('#imageUploadBox').removeClass('hidden')
-           $('#imageUploadBox').addClass('active');
-           $('#newcontentparent').removeClass('active');
-           $('#placesbutton').removeClass('bold');
-           $('#newcontentparent').addClass('hidden');
-         }
-        })
-   
-       $('#placesbutton').click(function(){
-   
-         if($('#imageUploadBox').is(':visible')){
-           $('#placesbutton').addClass('bold');
-           $('#newcontentparent').removeClass('hidden')
-           $('#newcontentparent').addClass('active');
-           $('#imageUploadBox').removeClass('active');
-           $('#imageUploadButton').removeClass('bold');
-           $('#imageUploadBox').addClass('hidden');
-         }
-   
-       })
-       // loads basic map with set centre
-       create_map();
+$(document).ready(function(){
+    imageCtrl.init();
+    // loads basic map with set centre
+    create_map();
    
        // click function to run geolocation on click
    
@@ -147,30 +86,27 @@
        $("#removeall").click(function() {
            $('#newcontentparent').children().remove().end();
            clearOverlays();
-           cpts.clear(); 
+           mapwaypoints.clear(); 
            places.splice(0, places.length);
        });
    
        // remove last marker 
    
        $("#removelastmarker").click(function(){
-           var lastmarker = _.last(markersarray);
+           var lastmarker = _.last(mapmarkers);
            lastmarker.setMap(null);
-           markersarray.pop();
+           mapmarkers.pop();
            places.pop();
            $('#newcontentparent').children().last().remove().end();
        });
    
        $('#removelastline').click(function(){
-           cpts.pop(); 
-       //    var lastp = _.last(cpts);
-       //    lastp.clear(); 
+           mapwaypoints.pop(); 
+
        });
    
-   
-   // click to get length
-   
-   // click function to submit map by creating 'obj' which incorporates hopefully
+
+   // click function to submit map by creating 'obj' which incorporates 
    // clickpoints and markers
    
    $('#user-submit').click(function () {
@@ -182,23 +118,16 @@
        return;
      }
    
-      if (cpts.b.length < 1){
+      if (mapwaypoints.b.length < 1){
          alert('Please insert at least one waypoint')
          return;
       }   
          collectContent();
-         convertWaypoints(cpts.b);
-         convertPlaces(markersarray);
-         addDescToPlaceObj(markerdescs, places);
-         var distance = poly.inKm().toFixed(2);
-         var loc = [];
-         var locTwo = [];
-         var x = cpts.b[0].lat();
-         var y = cpts.b[0].lng();
-         loc.push(x);
-         loc.push(y);
-         locTwo.push(y);
-         locTwo.push(x);
+         convertWaypoints(mapwaypoints.b);
+         convertPlaces(mapmarkers);
+
+         var loc = createLoc(mapwaypoints.b[0].lat(), mapwaypoints.b[0].lng());
+         var locTwo = createLocTwo(mapwaypoints.b[0].lat(), mapwaypoints.b[0].lng());
     
          var obj = {
            images: images,
@@ -210,7 +139,7 @@
            description: $('#description').val(),
            tags: tags,
            markerdescs: markerdescs,
-           distance: distance
+           distance: poly.inKm().toFixed(2)
            };
    
        $.ajax({
@@ -276,8 +205,8 @@
    
    google.maps.event.addListener(gmap, 'click', function(event) {
    update_timeout = setTimeout(function(){
-           cpts = poly.getPath(); 
-           cpts.push(event.latLng);
+           mapwaypoints = poly.getPath(); 
+           mapwaypoints.push(event.latLng);
            var distance = poly.inKm().toFixed(2);
            $('#lengthparent').text("Distance").append("<p>"+ distance + " km" + "</p>");
        }, 400);
@@ -307,24 +236,17 @@
          flat: true,
          draggable: true
      });
-      
-       google.maps.event.addListener(marker, 'click', function() {
-          infowindow.setContent("Description<p><input></p>");
-          infowindow.close();
-          infowindow.open(gmap, marker);   
-       });
-   
-     markersarray.push(marker);
+     mapmarkers.push(marker);
    };
    
    // function to clear markers
    
    function clearOverlays() {
-     if (markersarray) {
-       for (i in markersarray) {
-         markersarray[i].setMap(null);
+     if (mapmarkers) {
+       for (i in mapmarkers) {
+         mapmarkers[i].setMap(null);
        }
-       markersarray.length = 0;
+       mapmarkers.length = 0;
      }
    };
    
@@ -357,7 +279,7 @@
            if (status == google.maps.GeocoderStatus.OK) {
                gmap.setCenter(results[0].geometry.location);
            }
-           else{
+           else {
                alert("Sorry, we didn't recognise this location");
            }
         });
@@ -410,13 +332,18 @@
       return places;
    }
 
-   function addDescToPlaceObj(descriptions, places){
-      descriptions.forEach(function(desc){
-          places.forEach(function(place){
-              place['desc'] = desc;
-          })
-      })
-      return places;
+   function createLoc(lat, lon){
+      var loc = [];
+      loc[0] = lat;
+      loc[1] = lon;
+      return loc;
+   }
+
+   function createLocTwo(lat, lon){
+      var locTwo = [];
+      locTwo[0] = lon;
+      locTwo[1] = lat;
+      return locTwo;
    }
    
 </script>
