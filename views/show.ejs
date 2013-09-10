@@ -1,7 +1,7 @@
 <!doctype html>
 <head>
     <%- include partials/head.ejs %>
-
+    <script src="/javascripts/map.js" type="text/javascript"></script>
 </head>
 <body>
     <div id="maincontainer">
@@ -24,7 +24,7 @@
                     </div>
                     <div class="threecol last">
                         <div style="margin-top: 10px"><b>Places</b></div>
-                        <ul id="desclist" class="showlist"></ul>
+                        <ul class="showlist"></ul>
                     </div>
                 </div>
                 <%-include partials/favourite.ejs %>
@@ -36,8 +36,8 @@
                             <div><p><%= map.description %></p></div>
                         <% } %>
 
-                        <% if (map.tags) { %>
-                            <div id="showtags"><b>Tags</b></div>
+                        <% if (map.tags && map.tags[0]) { %>
+                            <div><b>Tags</b></div>
                             <ul id="maptags">
                             <% map.tags.forEach(function(tag){ %>
                                 <li><a href="/tags/<%= tag %>"><%= tag %></a></li>
@@ -62,121 +62,13 @@
 </body>
 </html>
 <script>
-    var gmap;
-    var arrayofwaypoints = [];
-    var infowindow = new google.maps.InfoWindow();
-    var jmap = <%- jmap %>;
-        
+    window.jmap = <%- jmap %>;
+    window.map = new Map;
+    window.infowindow = new google.maps.InfoWindow();
+    window.center = new google.maps.LatLng(jmap.waypoints[0].lat, jmap.waypoints[0].lon)
+    
     $(document).ready(function () {
-    create_blankmap(jmap);
-    addMarkersToMap(jmap);
-    addWaypointsToMap(jmap);
-    
-    $('#favourite').click(function() { 
-        favouritePost();
-        });
+        map.createMap(jmap, 'mymap', center);        
     });
-
-    function favouritePost() {
-        var obj = {
-            favourite: jmap._id,
-            plusone: jmap.favourited + 1
-        };
-    
-        $.ajax({
-            url: "/show",
-            type: "POST",
-            contentType: "application/json",
-            processData: false,
-            data: JSON.stringify(obj),
-            complete: function(data) {
-                $('#result').append().html(data.responseText);    
-            }
-        });
-    };
-
-
-    function create_blankmap(jmap){
-    
-    var mapOptions = {
-        center: new google.maps.LatLng(jmap.waypoints[0].lat, jmap.waypoints[0].lon),
-        zoom: 13,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        mapTypeControlOptions: {
-             mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE]
-        },
-        panControl: false,
-        zoomControl: false,
-        scaleControl: false,
-        zoomControl: true,
-        zoomControlOptions: {
-          style: google.maps.ZoomControlStyle.SMALL
-        },
-        streetViewControl: true
-        };
-       
-    gmap = new google.maps.Map(document.getElementById("mymap"), mapOptions);
-    bounds = new google.maps.LatLngBounds();
-    
-    };
-    
-    function placeMarker(location, descriptions) {
-      var newmarker = new google.maps.Marker({
-          position: location,
-          map: gmap,
-          flat: true
-          });
-
-        google.maps.event.addListener(newmarker, 'click', function() {
-        infowindow.setContent(descriptions)
-        infowindow.open(map, newmarker);
-        }); 
-    
-        $("<li>").html(descriptions + "</li>").click(function(){
-            infowindow.setContent(descriptions);
-            infowindow.open(gmap, newmarker); 
-        }).appendTo("#desclist");
-    };
-
-    // loop through markers and add to map
-    function addMarkersToMap(jmap){
-        for ( var i = 0, j = jmap.places.length; i < j; i++ ) {
-            var marker = new google.maps.LatLng(jmap.places[i].lat, jmap.places[i].lon);
-            bounds.extend(marker);
-            var descs = jmap.markerdescs[i];
-            placeMarker(marker, descs);
-        };
-    }
-    
-    // loop through waypoints and add to array of waypoints which is then added to map
-    function addWaypointsToMap(jmap){
-        for ( var i = 0, j = jmap.waypoints.length; i < j; i++) {
-            var x = new google.maps.LatLng(jmap.waypoints[i].lat, jmap.waypoints[i].lon);
-            arrayofwaypoints.push(x);
-            bounds.extend(x);
-        };
-        gmap.fitBounds(bounds);
-        setPolyline();
-    }
-    
-    function setPolyline(){
-        var lineSymbol = {
-          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-        };
-    
-        var route = new google.maps.Polyline({
-            path: arrayofwaypoints,
-            strokeOpacity: 0.7,
-            strokeWeight: 3,
-            strokeColor: '#FF0000',
-            icons: [{
-            icon: lineSymbol,
-            offset: '0',
-            repeat: '150px'
-            }],
-        });
-        route.setMap(gmap);
-}
-
-
+   
 </script>

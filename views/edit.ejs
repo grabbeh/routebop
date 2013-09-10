@@ -261,8 +261,8 @@
     // loop through markers and add to map using placeMarker function
     
     for ( var i = 0, j = jmap.places.length; i < j; i++ ) {
-        var marker = new google.maps.LatLng(mapp.places[i].lat, jmap.places[i].lon)
-        var descs = mapp.markerdescs[i];
+        var marker = new google.maps.LatLng(jmap.places[i].lat, jmap.places[i].lon)
+        var descs = jmap.markerdescs[i];
         bounds.extend(marker);
         placeMarker(marker, descs);
     };
