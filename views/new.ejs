@@ -67,7 +67,7 @@ $(document).ready(function(){
 
     geocodeCtrl.init('#geolocate', '#userlocation', '#userlocationsubmit')
    
-    map.collectMapAndSendToServer();
+    map.collectMapAndSendToServer('#user-submit');
    });
     
    google.maps.LatLng.prototype.kmTo = function(a){ 
@@ -85,7 +85,7 @@ $(document).ready(function(){
          dist += a.getAt(i).kmTo(a.getAt(i+1)); 
        } 
        return dist; 
-     } 
+    } 
    
   
 </script>

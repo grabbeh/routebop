@@ -242,9 +242,9 @@ function Map(){
         mapmarkers.length = 0;
         }
     }
-    this.collectMapAndSendToServer = function(){
+    this.collectMapAndSendToServer = function(elem){
         var that = this;
-        $('#user-submit').click(function () {
+        $(elem).click(function () {
             var tags = $('#tags').val().split(" ");
             var newtitle = $('#title').val();
             if (newtitle.length < 1) {
