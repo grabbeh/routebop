@@ -5,12 +5,7 @@
    <script src="/javascripts/map.js" type="text/javascript"></script>
    <script src="/javascripts/imageController.js" type="text/javascript"></script>
    <script src="/javascripts/geocodeController.js" type="text/javascript"></script>
-   <script>
 
-      var gmap;
-      var update_timeout = null;
-      
-   </script>
 </head>
 <body>
    <div id="maincontainer">
@@ -57,7 +52,6 @@ var map = new Map;
 var center = new google.maps.LatLng(<%= coords.lat %>, <%= coords.lng %>);
 
 $(document).ready(function(){
-
     imageCtrl.init();
     geocodeCtrl.init('#geolocate', '#userlocation', '#userlocationsubmit')
     map.createMap('mymap', center, map.returnNewMapOptions(center)); 
