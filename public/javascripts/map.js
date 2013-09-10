@@ -6,11 +6,11 @@ function Map(){
     var mapmarkers = [];
     var markerdescriptions = [];
     var poly;
+    var update_timeout = null;
     
     this.setCenter = function(center){
         gmap.setCenter(center);
     }
-
 
 	this.createMap = function(elem, center, options, jmap){
 	    gmap = new google.maps.Map(document.getElementById(elem), options);

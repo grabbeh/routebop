@@ -51,25 +51,25 @@
 </body>
 </html>
 <script>
-window.imageCtrl = new imageController;
-window.map = new Map;
-window.geocodeCtrl = new geocodeController;
-window.center = new google.maps.LatLng(<%= coords.lat %>, <%= coords.lng %>);
+var imageCtrl = new imageController;
+var geocodeCtrl = new geocodeController;
+var map = new Map;
+var center = new google.maps.LatLng(<%= coords.lat %>, <%= coords.lng %>);
 
 $(document).ready(function(){
 
     imageCtrl.init();
-
+    geocodeCtrl.init('#geolocate', '#userlocation', '#userlocationsubmit')
     map.createMap('mymap', center, map.returnNewMapOptions(center)); 
     map.setPolyline(map.returnPolyLineNewOptions());
     map.addGmapListeners();
     map.addMarkerAndPolylineEdit();
-
-    geocodeCtrl.init('#geolocate', '#userlocation', '#userlocationsubmit')
-   
     map.collectMapAndSendToServer('#user-submit');
    });
-    
+
+</script>
+<script>
+  
    google.maps.LatLng.prototype.kmTo = function(a){ 
        var e = Math, ra = e.PI/180; 
        var b = this.lat() * ra, c = a.lat() * ra, d = b - c; 
@@ -87,5 +87,4 @@ $(document).ready(function(){
        return dist; 
     } 
    
-  
 </script>
