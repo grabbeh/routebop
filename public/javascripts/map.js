@@ -3,10 +3,15 @@ function Map(){
 	var gmap;
     var bounds;
     var mapwaypoints = [];
-    mapmarkers = [];
+    var mapmarkers = [];
     var markerdescriptions = [];
     var poly;
     
+    this.setCenter = function(center){
+        gmap.setCenter(center);
+    }
+
+
 	this.createMap = function(elem, center, options, jmap){
 	    gmap = new google.maps.Map(document.getElementById(elem), options);
 	    bounds = new google.maps.LatLngBounds();
