@@ -51,7 +51,7 @@ var center = new google.maps.LatLng(jmap.waypoints[0].lat, jmap.waypoints[0].lon
 
     $(document).ready(function(){
         imageCtrl.init();
-        geocodeCtrl.init('#geolocate', '#userlocation', '#userlocationsubmit')
+        geocodeCtrl.init('#userlocation','#geolocate',  '#userlocationsubmit')
         map.createMap('mymap', center, map.returnNewMapOptions(center)); 
         map.setPolyline(map.returnPolyLineNewOptions());
         map.addMarkersToMap(jmap.places, jmap.markerdescs, true);

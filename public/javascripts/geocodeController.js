@@ -14,20 +14,21 @@ function geocodeController(){
     this.geocodeByAddressOnEnter = function(elem){
         $(elem).keypress(function (e) {
             if (e.which == 13) {
-                that.geocodeAddress();   
+                that.geocodeAddress(elem);   
             }
         });
     }
 
-   this.geocodeByAddressOnSubmit = function(elem){
+   this.geocodeByAddressOnSubmit = function(elem, elemTwo){
         $(elem).click(function(){
-           that.geocodeAddress();
+           that.geocodeAddress(elem);
         });
     }
 
     this.init = function(elemOne, elemTwo, elemThree){
-        this.geocodeByUserLocation(elemOne)
-        this.geocodeByAddressOnEnter(elemTwo)
+        this.geocodeByAddressOnEnter(elemOne)
+        this.geocodeByUserLocation(elemTwo)
+        
         this.geocodeByAddressOnSubmit(elemThree)
     }
 
@@ -35,9 +36,9 @@ function geocodeController(){
            alert(error.code)
        }   
    
-    this.geocodeAddress = function(){
+    this.geocodeAddress = function(elem){
 
-        var address = $("#userlocation").val();
+        var address = $(elem).val();
         geocoder = new google.maps.Geocoder();
         geocoder.geocode({'address': address}, function(results, status){
            if (status == google.maps.GeocoderStatus.OK) {

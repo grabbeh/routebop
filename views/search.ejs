@@ -3,8 +3,8 @@
     <%-include partials/head.ejs %>
     <script type="text/javascript" src="/javascripts/markerclusterer.js"></script>
     <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js"></script>
-       <script src="/javascripts/map.js" type="text/javascript"></script>
-   <script src="/javascripts/geocodeController.js" type="text/javascript"></script>
+    <script src="/javascripts/map.js" type="text/javascript"></script>
+    <script src="/javascripts/geocodeController.js" type="text/javascript"></script>
 </head>
 <body>
     <div id="maincontainer">
@@ -42,10 +42,8 @@
 </body>
 </html>
 <script>
-    var gmap = null;
-    var mapmarkers = [];
+ 
     var mc;
-    var infowindow = new google.maps.InfoWindow();
     var geocodeCtrl = new geocodeController;
     var map = new Map;
     var center = new google.maps.LatLng(51.50678771873268, -0.12717489055171427)
@@ -54,7 +52,7 @@
     
         map.createMap('mymap', center, map.returnShowMapOptions(center));
         map.addInitialSearchListener();
-        geocodeCtrl.init('#geolocate', '#userlocation', '#userlocationsubmit');
+        geocodeCtrl.init('#userlocation','#geolocate', '#userlocationsubmit');
     
         map.filterByTag('#maptags');
         map.removeFilterByTag('#showalltagsbutton');

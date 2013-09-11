@@ -53,7 +53,7 @@ var center = new google.maps.LatLng(<%= coords.lat %>, <%= coords.lng %>);
 
 $(document).ready(function(){
     imageCtrl.init();
-    geocodeCtrl.init('#geolocate', '#userlocation', '#userlocationsubmit')
+    geocodeCtrl.init('#userlocation','#geolocate',  '#userlocationsubmit')
     map.createMap('mymap', center, map.returnNewMapOptions(center)); 
     map.setPolyline(map.returnPolyLineNewOptions());
     map.addGmapListeners();
