@@ -71,6 +71,8 @@ exports.submitmap = function(req, res) {
 // renders basic map which when created posts bounds to obtain actual map data
 
 exports.getSearch = function(req, res) {
+
+  res.locals.coords = {lat: 51.50678771873268, lng: -0.12717489055171427}
   res.render('search');  
 };
 

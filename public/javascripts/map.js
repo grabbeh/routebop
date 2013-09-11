@@ -1,7 +1,5 @@
 function Map(){
 
-	var gmap;
-    var bounds;
     var mapwaypoints = [];
     var mapmarkers = [];
     var markerdescriptions = [];
@@ -29,7 +27,7 @@ function Map(){
         });
     };
 
-     this.favouritePost = function() {
+    this.favouritePost = function() {
         var postdata = {
             favourite: jmap._id,
             plusone: jmap.favourited + 1
@@ -50,20 +48,20 @@ function Map(){
         return newMapOptions;
     }
 
-	this.returnLineSymbolOptions = function(){
+    this.returnLineSymbolOptions = function(){
     	return lineSymbol;
     }
 
-     this.returnPolyLineOptions = function(){
+    this.returnPolyLineOptions = function(){
      	return polylineOptions;
-     }
+    }
 
-     this.returnPolyLineNewOptions = function(){
-        return polylineNewOptions
+    this.returnPolyLineNewOptions = function(){
+        return polylineNewOptions;
      }
 
      this.returnMapMarker = function(i){
-        return mapmarkers[i]
+        return mapmarkers[i];
      }
 
 	this.setPolyline = function(options){
@@ -71,26 +69,26 @@ function Map(){
 		polyline.setMap(gmap);
 	}
 
-	this.addWaypointsToMap = function(jmap){
-        for ( var i = 0, j = jmap.waypoints.length; i < j; i++) {
-            var waypoint = new google.maps.LatLng(jmap.waypoints[i].lat, jmap.waypoints[i].lon);
+	this.addWaypointsToMap = function(waypoints){
+        for ( var i = 0, j = waypoints.length; i < j; i++) {
+            var waypoint = new google.maps.LatLng(waypoints[i].lat, waypoints[i].lon);
             mapwaypoints.push(waypoint);
             bounds.extend(waypoint);
         };
         gmap.fitBounds(bounds);
   		this.setPolyline(this.returnPolyLineOptions());
-    }
+  }
 
-    this.addMarkersToMap = function(jmap){
-        for ( var i = 0, j = jmap.places.length; i < j; i++ ) {
-            var location = new google.maps.LatLng(jmap.places[i].lat, jmap.places[i].lon);
+    this.addMarkersToMap = function(places, descriptions){
+        for ( var i = 0, j = places.length; i < j; i++ ) {
+            var location = new google.maps.LatLng(places[i].lat, places[i].lon);
             bounds.extend(location);
-            var desc = jmap.markerdescs[i];
-
+            var desc = descriptions[i];
             this.placeMarker(location, desc);
             this.addDescription(location, desc);
         };
     };
+
 
     this.placeMarker = function(location, desc, draggable) {
         var marker = new google.maps.Marker({
@@ -99,26 +97,73 @@ function Map(){
             flat: true,
             draggable: draggable
         });
-
-        google.maps.event.addListener(marker, 'click', function(){
-			infowindow.setContent(desc);
-    		infowindow.open(gmap, this);
-        }); 
+        this.listenerToOpenInfoWindowOnMarkerClick(marker, desc);
         mapmarkers.push(marker);
     };
 
-    this.addDescription = function(location, desc) {
+    this.placeSearchMarker = function(location, desc){
+        var marker = new google.maps.Marker({
+            position: location,
+            map: gmap,
+            flat: true
+        });
+
+        this.addSearchDescriptions(location, desc);
+        this.listenerToCloseAndOpenInfoWindowOnMarkerClick(marker, desc);
+        this.listenersToVarySearchListeners();
+        mapmarkers.push(marker);
+    }
+
+    this.addSearchDescriptions = function(location, desc){
         var that = this;
+        $("<li>").html(desc + "</li>").click(function(){
+            google.maps.event.clearListeners(gmap, 'idle');
+            infowindow.setContent(desc);
+            var index = $('.showlist li').index(this);
+            infowindow.open(gmap, that.returnMapMarker(index));     
+    
+          }).appendTo(".showlist");
+      }
+
+    this.listenerToOpenInfoWindowOnMarkerClick = function(marker, desc){
+        google.maps.event.addListener(marker, 'click', function(){
+            infowindow.setContent(desc);
+            infowindow.open(gmap, this);
+        }); 
+    }
+
+    this.listenerToCloseAndOpenInfoWindowOnMarkerClick = function(marker, desc){
+
+        if (infowindow.open) {
+                infowindow.close();
+            }
+        google.maps.event.addListener(marker, 'click', function() {
+            google.maps.event.clearListeners(gmap, 'idle');
+            infowindow.setContent(desc);
+            infowindow.open(gmap, this);   
+        });
+    }
+
+    this.listenersToVarySearchListeners = function(){
+        var that = this;
+        google.maps.event.addListener(infowindow, 'closeclick', function(){
+            if ($('#maptags').children().length === 1) {
+                that.addTagListeners();
+            }
+            else {
+                that.addMapListeners();
+            }
+        })
+    }
+
+    this.addDescription = function(location, desc) {
+      var that = this;
     	$('.showlist').append("<li>" + desc + "</li>")
         $('.showlist li').click(function(){
             var index = $('.showlist li').index(this);
             google.maps.event.trigger(that.returnMapMarker(index), "click")
     	});
     };
-
-    this.openInfoWindow = function(desc, location){
-
-    }
 
     this.addFavouriteClick = function(elem){
         var that = this;
@@ -177,7 +222,6 @@ function Map(){
       return loc;
     }
 
-
     this.addWaypointOnClick = function(){
       google.maps.event.addListener(gmap, 'click', function(event) {
             update_timeout = setTimeout(function(){
@@ -235,6 +279,9 @@ function Map(){
     }
 
     this.clearOverlays = function(){
+         if (mc){
+            mc.clearMarkers();
+        }
         if (mapmarkers) {
             for (i in mapmarkers) {
                 mapmarkers[i].setMap(null);
@@ -242,6 +289,7 @@ function Map(){
         mapmarkers.length = 0;
         }
     }
+
     this.collectMapAndSendToServer = function(elem){
         var that = this;
         $(elem).click(function () {
@@ -283,9 +331,164 @@ function Map(){
                    window.location.href = "/show/" + data.id;
                    }, 1000);
                })
-       });
-}
+            });
+        }
 
+    this.clearElementsOnSearch = function(){
+        $('.showlist').children().remove().end();
+        $('#maptags').children().remove().end();
+        $('#maptaglist').addClass('hide-element');
+    }
+
+    this.processMapBounds = function(postbounds){
+            boxarray = []; 
+            var sw = postbounds.getSouthWest();
+            var ne = postbounds.getNorthEast();
+            boxarray.push(sw.lat());
+            boxarray.push(sw.lng());
+            boxarray.push(ne.lat());
+            boxarray.push(ne.lng());
+            return boxarray;
+        }
+
+    this.addInitialSearchListener = function(){
+        var that = this;
+        google.maps.event.addListener(gmap, "idle", function(){
+            that.clearOverlays();
+            that.clearElementsOnSearch();
+            var postbounds = gmap.getBounds();
+            that.processMapBounds(postbounds);
+            that.postBoundsToServer(boxarray);
+       });
+
+
+    };
+
+    this.postBoundsToServer = function(postbounds) {
+        var that = this;
+        var obj = {mapbounds: boxarray};
+        this.sendToServer(obj, '/search', function(data) {
+                that.clearOverlays();
+                that.clearElementsOnSearch();
+                that.processMapData(data);
+                mc = new MarkerClusterer(gmap, mapmarkers);
+            });
+        };
+    
+    this.postBoundsAndTagToServer = function(postbounds, tag) {
+        var that = this;
+        var obj = {mapbounds: boxarray, tag: tag};
+ 
+        map.sendToServer(obj, '/search', function(data) {
+                that.clearOverlays();
+                that.clearElementsOnSearch();
+                that.processTagData(data);
+                mc = new MarkerClusterer(gmap, mapmarkers);
+                $('#maptags').append("<li> " + tag + " </li>")
+            })
+        };
+
+    this.addMapListeners = function(){
+        var that = this;
+        google.maps.event.addListener(gmap, "idle", function(){
+        var postbounds = gmap.getBounds();
+        that.processMapBounds(postbounds);
+        that.postBoundsToServer(boxarray);
+       })
+    };
+    
+    this.addTagListeners = function(){
+        var that = this;
+        google.maps.event.addListener(gmap, "idle", function(){
+        var newtag = $('#maptags').children().text().trim();     
+        var postbounds = gmap.getBounds();
+        that.processMapBounds(postbounds);
+        that.postBoundsAndTagToServer(boxarray, newtag);
+       });
+    };
+
+    this.processMapData = function(maps){
+        var that = this;
+        var tagarrays = [];
+        if (maps.length > 0) {
+            for (var i = 0, j = maps.length; i < j; i++) {
+                var marker = new google.maps.LatLng(maps[i].loc[0], maps[i].loc[1]);
+                bounds.extend(marker);
+                var url = maps[i]._id;
+                var fullurl = "<span class=\"markerlink\"><a href='/show/" + url + "'>View route</a></span>";
+                var title = "<span class=\"marker\">" + maps[i].title + " - " + fullurl + "</span";
+                that.placeSearchMarker(marker, title); 
+
+                tagarrays.push(maps[i].tags);
+        };
+
+        $('#maptaglist').removeClass('hide-element');
+        var flatarray = _.flatten(tagarrays);
+        var reducedarray = _.uniq(flatarray);
+        
+    
+        for (var i = 0, j = reducedarray.length; i < j; i++) {
+            var maptag = reducedarray[i].trim();
+            $('#maptags').append("<li> " + maptag + " </li>");
+        }
+    }
+    else {
+        var lat = gmap.getCenter().lat();
+        var lng = gmap.getCenter().lng();
+        var getparams = $.param({lat:lat, lng:lng});
+        var locationurl = "Sorry - no routes for this place - maybe you'd like to add one <a href='/new?" + getparams + "'>here</a>";
+        $("<li>").html(locationurl).appendTo("#showroutelist");
+        }
+    }
+
+
+    this.processTagData = function(maps){
+        var that = this;
+        if (maps.length > 0) {
+            for (var i = 0, j = maps.length; i < j; i++) {
+                var marker = new google.maps.LatLng(maps[i].loc[0], maps[i].loc[1]);
+                bounds.extend(marker);
+                var url = maps[i]._id;
+                var fullurl = "<span class=\"markerlink\"><a href='/show/" + url + "'>View route</a></span>";
+                var title = "<span class=\"marker\">" + maps[i].title + " - " + fullurl + "</span";
+                that.placeSearchMarker(marker, title); 
+            };
+        }
+        else {
+            var lat = gmap.getCenter().lat();
+            var lng = gmap.getCenter().lng();
+            var getparams = $.param({lat:lat, lng:lng});
+            var locationurl = "Sorry, no routes - you might like to add one <a href='/new?" + getparams + "'>here</a>";
+            $("<li>").html(locationurl).appendTo("#showroutelist");
+        }
+    }
+
+    this.filterByTag = function(elem){
+        var that = this;
+            $(elem).delegate('li', 'click', function(){
+            var submittag = $(this).text().trim();        
+            var postbounds = gmap.getBounds();
+            that.processMapBounds(postbounds);
+            that.postBoundsAndTagToServer(boxarray, submittag);
+            google.maps.event.clearListeners(map, 'idle');
+            that.addTagListeners();
+            $('#showalltagsbutton').removeClass('hide-element');
+    
+        })
+    }
+
+    this.removeFilterByTag = function(elem){
+        var that = this;
+    
+        $(elem).click(function(){
+            var postbounds = gmap.getBounds();
+            that.processMapBounds(postbounds);
+            that.postBoundsToServer(boxarray);
+            google.maps.event.clearListeners(map, 'idle');
+            that.addMapListeners();
+            $('#showalltagsbutton').addClass('hide-element');
+        })
+    }
 
     var polylineOptions = {
             path: mapwaypoints,
@@ -300,7 +503,6 @@ function Map(){
      }
 
      var polylineNewOptions = {
-
           icons: [{
            icon: lineSymbol,
            offset: '0',
@@ -313,7 +515,7 @@ function Map(){
      }
 
     var lineSymbol = {
-          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
     };
 
     var showMapOptions = {
@@ -349,7 +551,5 @@ function Map(){
              style: google.maps.ZoomControlStyle.SMALL
            },
            streetViewControl: false
-           };
-
-
+        };
 };
