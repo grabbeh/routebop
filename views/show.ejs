@@ -49,7 +49,7 @@
                         <% if (map.images.length) { %>
                             <div class="imageHeader"><b>Images</b></div>
                             <% map.images.forEach(function(image){ %>
-                                <span><a href="<%=image.mainurl %>"><img class="thumbnail" src="<%= image.thumburl %>"></a></span>
+                                <span><a target="_blank" href="<%=image.mainurl %>"><img class="thumbnail" src="<%= image.thumburl %>"></a></span>
                             <% }) %>
                         <% } %>
                     </div>

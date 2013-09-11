@@ -27,7 +27,7 @@
                         <div id="thumb">
                            <% if (map.images.length) { %>
                               <% map.images.forEach(function(image){ %>
-                                 <a href="<%=image.mainurl %>"><img class="thumbnail" src="<%= image.thumburl %>"></a><span class="removeImage">x</span></a>
+                                 <a target="_blank" href="<%=image.mainurl %>"><img class="thumbnail" src="<%= image.thumburl %>"></a><span class="removeImage">x</span></a>
                               <% }) %>
                            <% } %>
                               

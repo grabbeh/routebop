@@ -2,7 +2,7 @@
 function imageController(images){
     var that = this;
     var images = [];
-    
+
     this.init = function(){
       $('#MyForm').transloadit(imageCtrl.transloaditOptions);
       this.addRemoveImageHandler('.removeImage');
@@ -88,7 +88,7 @@ function imageController(images){
              var thumburl = turl.replace('http', 'https');
              var murl = assembly.results[':original'][0].url;
              var mainurl = murl.replace('http', 'https');
-             $('#thumb').append("<a href=" + mainurl + ">" + "<img src=" + thumburl + "><span>x</span></a>");
+             $('#thumb').append("<a target="_blank" href=" + mainurl + ">" + "<img src=" + thumburl + "><span>x</span></a>");
              $('#thumb').find('span').addClass('removeImage');
              var imgUrls = {};
              imgUrls['thumburl'] = thumburl;
