@@ -1,0 +1,36 @@
+<div><span id="placesbutton" class="bold">Places</span> | <span id="imageUploadButton">Images</span></div>
+                  <span>
+                     <div id="newcontentparent">
+
+                        <% if (map.markerdescs[0]) { %>
+                            <% map.markerdescs.forEach(function(desc){ %>
+                                <p><input class="markerdescription" type="text" value="<%= desc %>"></p>
+                            <% }) %>
+                        <% } %>
+
+                     </div>
+                  </span>
+                  <span>
+                     <div class="hidden" id="imageUploadBox">
+                        <div>
+                           <form id="MyForm" action="http://api2.transloadit.com/assemblies" enctype="multipart/form-data" method="POST">
+                             <input style="display:none" name="params" value="{&quot;auth&quot;:{&quot;key&quot;:&quot;b9eeea1eb0b645fb98f17e07504483d2&quot;},&quot;template_id&quot;:&quot;bd52d2da4b20473fbc34a0349e6c55f8&quot;}" />
+                              <div id="inputlabel"><label id="add-file-button" for="fileupload">Select file
+                              </label>
+                           </div>
+                              <input type="file" id="fileupload" name="my_file" accept="image/*" style="visibility:hidden; display:none"/>
+                                 
+                              <input class="formbutton" type="submit" value="Upload" id="photoUpload" style="visibility: hidden; display:none"/>
+                           </form>
+                        </div>
+                        <div id="progress"></div>
+                        <div id="thumb">
+                           <% if (map.images.length) { %>
+                              <% map.images.forEach(function(image){ %>
+                                 <a href="<%=image.mainurl %>"><img class="thumbnail" src="<%= image.thumburl %>"></a><span class="removeImage">x</span></a>
+                              <% }) %>
+                           <% } %>
+                              
+                       </div>
+                     </div>
+                  </span>

@@ -1,16 +1,20 @@
 
-function imageController(){
+function imageController(images){
     var that = this;
     var images = [];
-
+    
     this.init = function(){
       $('#MyForm').transloadit(imageCtrl.transloaditOptions);
-      this.addRemoveImageHandler();
+      this.addRemoveImageHandler('.removeImage');
       this.togglePlacesandImages();
       this.triggerUploadProcessHandler();
+    };
+
+    this.addToImages = function(image){
+      images.push(image);
     }
 
-    this.updateImages = function(id){
+    this.removeImages = function(id){
         if (this.returnImages().length === 1){
            images = [];
         }
@@ -26,7 +30,7 @@ function imageController(){
     this.removeImage = function(e){
         e.preventDefault();
         var id = $(this).index();
-        that.updateImages(id);
+        that.removeImages(id);
         $(this).parent().remove();
     }
 
@@ -89,11 +93,8 @@ function imageController(){
              var imgUrls = {};
              imgUrls['thumburl'] = thumburl;
              imgUrls['mainurl'] = mainurl;
-             images.push(imgUrls);
-           
+             that.addToImages(imgUrls);
         }
-
-
     }
 }
 

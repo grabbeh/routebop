@@ -24,8 +24,6 @@ exports.home = function(req, res){
   });
 };
 
-// get route for new map - providing default values if no queries are available
-
 exports.new = function(req, res){
   if (req.query.lat === undefined) {
     res.locals.coords = {lat: 51.50678771873268, lng: -0.12717489055171427}
@@ -39,7 +37,7 @@ else {
 // saves map following post data from /new
 
 exports.submitmap = function(req, res) {
-
+  console.log(req.body);
   var day = moment(new Date());
   var formattedDate = day.format("MMMM Do YYYY, h:mm:ss a");
   if (!req.user) { id = "guest" }
@@ -192,8 +190,8 @@ exports.delfav = function(req, res) {
 exports.edit = function(req, res) {
      Map.findOne({_id: req.params.id}, function(error, map) {
           if (req.user._id === map.author) {
-              var map = JSON.stringify(map);
-              res.render('edit', {map: map});
+              var jmap = JSON.stringify(map);
+              res.render('edit', {map: map, jmap: jmap});
             }
           else {
             res.redirect('/account');
@@ -204,7 +202,7 @@ exports.edit = function(req, res) {
 // post an updated route
 
 exports.editupdate = function(req, res) {
- 
+    console.log(req.body);
    Map.findById(req.body.id, function(err, map) {
       if (!err)
          {

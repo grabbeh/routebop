@@ -3,7 +3,6 @@ function Map(){
     var mapwaypoints = [];
     var mapmarkers = [];
     var markerdescriptions = [];
-    var poly;
     var update_timeout = null;
     
     this.setCenter = function(center){
@@ -13,7 +12,7 @@ function Map(){
 	this.createMap = function(elem, center, options, jmap){
 	    gmap = new google.maps.Map(document.getElementById(elem), options);
 	    bounds = new google.maps.LatLngBounds();
-        infowindow = new google.maps.InfoWindow();
+      infowindow = new google.maps.InfoWindow();
     };
 
 	this.sendToServer = function(postdata, posturl, completefunction){
@@ -40,8 +39,12 @@ function Map(){
 
     this.returnShowMapOptions = function(center){
         showMapOptions.center = center;
-		return showMapOptions;
+		    return showMapOptions;
 	};
+
+   this.returnMapWaypoints = function(maywaypoints){
+        return mapwaypoints;
+   }
 
     this.returnNewMapOptions = function(center){
         newMapOptions.center = center;
@@ -76,15 +79,25 @@ function Map(){
             bounds.extend(waypoint);
         };
         gmap.fitBounds(bounds);
-  		this.setPolyline(this.returnPolyLineOptions());
+        this.setPolyline(this.returnPolyLineOptions());
   }
 
-    this.addMarkersToMap = function(places, descriptions){
+  this.addEditableWaypointsToMap = function(waypoints){
+      for ( var i = 0, j = waypoints.length; i < j; i++) {
+            var waypoint = new google.maps.LatLng(waypoints[i].lat, waypoints[i].lon);
+            mapwaypoints = polyline.getPath();
+            mapwaypoints.push(waypoint);
+            bounds.extend(waypoint);
+        };
+      gmap.fitBounds(bounds);
+  }
+
+    this.addMarkersToMap = function(places, descriptions, draggable){
         for ( var i = 0, j = places.length; i < j; i++ ) {
             var location = new google.maps.LatLng(places[i].lat, places[i].lon);
             bounds.extend(location);
             var desc = descriptions[i];
-            this.placeMarker(location, desc);
+            this.placeMarker(location, desc, draggable);
             this.addDescription(location, desc);
         };
     };
@@ -260,7 +273,7 @@ function Map(){
         var that = this;
         $("#removeall").click(function() {
             $('#newcontentparent').children().remove().end();
-                that.clearOverlays();
+                that.clearMarkers();
                 mapwaypoints.clear(); 
                 mapmarkers.splice(0, mapmarkers.length);
            });
@@ -278,10 +291,8 @@ function Map(){
         });
     }
 
-    this.clearOverlays = function(){
-         if (mc){
-            mc.clearMarkers();
-        }
+    this.clearMarkers = function(){
+
         if (mapmarkers) {
             for (i in mapmarkers) {
                 mapmarkers[i].setMap(null);
@@ -290,7 +301,18 @@ function Map(){
         }
     }
 
-    this.collectMapAndSendToServer = function(elem){
+    this.clearMarkerClusters = function(){
+      if (mc){
+        mc.clearMarkers();
+      }
+    }
+
+    this.clearMarkersAndClusters = function(){
+       this.clearMarkers();
+       this.clearMarkerClusters();
+    }
+
+    this.collectMapAndSendToServer = function(elem, url){
         var that = this;
         $(elem).click(function () {
             var tags = $('#tags').val().split(" ");
@@ -300,9 +322,9 @@ function Map(){
             return;
          }
    
-        if (mapwaypoints.b.length < 1){
-                alert('Please insert at least one waypoint')
-                return;
+        if (mapwaypoints.length < 1){
+            alert('Please insert at least one waypoint')
+            return;
         }   
       
          that.collectMarkerDescriptions();
@@ -312,7 +334,11 @@ function Map(){
          var loc = that.createLoc(mapwaypoints.b[0].lat(), mapwaypoints.b[0].lng());
          var locTwo = that.createLoc(mapwaypoints.b[0].lng(), mapwaypoints.b[0].lat());
     
+
+          if (jmap) { id = jmap._id }
+            else {id = 0;}
          var postMap = {
+           id: id,
            images: imageCtrl.returnImages(),
            loc: loc,
            locTwo: locTwo,
@@ -325,7 +351,7 @@ function Map(){
            distance: polyline.inKm().toFixed(2)
            };
    
-        that.sendToServer(postMap, '/new', function (data) {
+        that.sendToServer(postMap, url, function (data) {
             $('#output').html(data.message); 
                   setTimeout(function() {
                    window.location.href = "/show/" + data.id;
@@ -354,7 +380,7 @@ function Map(){
     this.addInitialSearchListener = function(){
         var that = this;
         google.maps.event.addListener(gmap, "idle", function(){
-            that.clearOverlays();
+            that.clearMarkersAndClusters();
             that.clearElementsOnSearch();
             var postbounds = gmap.getBounds();
             that.processMapBounds(postbounds);
@@ -368,7 +394,7 @@ function Map(){
         var that = this;
         var obj = {mapbounds: boxarray};
         this.sendToServer(obj, '/search', function(data) {
-                that.clearOverlays();
+                that.clearMarkersAndClusters();
                 that.clearElementsOnSearch();
                 that.processMapData(data);
                 mc = new MarkerClusterer(gmap, mapmarkers);
@@ -380,7 +406,7 @@ function Map(){
         var obj = {mapbounds: boxarray, tag: tag};
  
         map.sendToServer(obj, '/search', function(data) {
-                that.clearOverlays();
+                that.clearMarkersAndClusters();
                 that.clearElementsOnSearch();
                 that.processTagData(data);
                 mc = new MarkerClusterer(gmap, mapmarkers);
@@ -488,6 +514,19 @@ function Map(){
             that.addMapListeners();
             $('#showalltagsbutton').addClass('hide-element');
         })
+    }
+
+    this.addTagsToEdit = function(tags){
+
+    // add title and description to page
+    if (tags[0] === ""){
+     $('#tags').append("");
+    }
+    else {
+        var tagsString = tags.join(" ");
+        $('#tags').val(tagsString);
+    }
+
     }
 
     var polylineOptions = {
