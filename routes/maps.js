@@ -37,7 +37,7 @@ else {
 // saves map following post data from /new
 
 exports.submitmap = function(req, res) {
-  console.log(req.body);
+
   var day = moment(new Date());
   var formattedDate = day.format("MMMM Do YYYY, h:mm:ss a");
   if (!req.user) { id = "guest" }
@@ -202,7 +202,7 @@ exports.edit = function(req, res) {
 // post an updated route
 
 exports.editupdate = function(req, res) {
-    console.log(req.body);
+
    Map.findById(req.body.id, function(err, map) {
       if (!err)
          {

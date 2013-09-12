@@ -79,8 +79,8 @@ exports.getPublicUser = function (req, res){
     Map.find({author: req.params.id})
       .select('_id title loc tags')
       .exec(function(err, maps) {
-        var maps = JSON.stringify(maps)
-        res.render('user', { usr: user,  maps: maps});
+        var jmaps = JSON.stringify(maps)
+        res.render('user', { usr: user,  jmaps: jmaps});
       })
   })
 }

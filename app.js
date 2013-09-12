@@ -87,9 +87,9 @@ app.post('/postupload', transloadit.postupload);
 
 app.get('/', map.home);
 
-app.get('/new', map.new);
+app.get('/add', map.new);
 
-app.post('/new', map.submitmap);
+app.post('/add', map.submitmap);
 
 app.get('/search', map.getSearch);
 

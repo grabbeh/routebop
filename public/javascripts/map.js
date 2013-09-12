@@ -67,6 +67,10 @@ function Map(){
         return mapmarkers[i];
      }
 
+     this.returnMapMarkers = function(){
+        return mapmarkers;
+     }
+
 	this.setPolyline = function(options){
 		polyline = new google.maps.Polyline(options);
 		polyline.setMap(gmap);
@@ -130,6 +134,7 @@ function Map(){
     this.addSearchDescriptions = function(location, desc){
         var that = this;
         $("<li>").html(desc + "</li>").click(function(){
+
             google.maps.event.clearListeners(gmap, 'idle');
             infowindow.setContent(desc);
             var index = $('.showlist li').index(this);
@@ -333,10 +338,7 @@ function Map(){
 
          var loc = that.createLoc(mapwaypoints.b[0].lat(), mapwaypoints.b[0].lng());
          var locTwo = that.createLoc(mapwaypoints.b[0].lng(), mapwaypoints.b[0].lat());
-    
-
-          if (jmap) { id = jmap._id }
-            else {id = 0;}
+         if (jmap === null){ id = 0} else { id = jmap._id}
          var postMap = {
            id: id,
            images: imageCtrl.returnImages(),
@@ -397,7 +399,7 @@ function Map(){
                 that.clearMarkersAndClusters();
                 that.clearElementsOnSearch();
                 that.processMapData(data);
-                mc = new MarkerClusterer(gmap, mapmarkers);
+                that.setMarkerClusterer(gmap, that.returnMapMarkers());
             });
         };
     
@@ -409,7 +411,7 @@ function Map(){
                 that.clearMarkersAndClusters();
                 that.clearElementsOnSearch();
                 that.processTagData(data);
-                mc = new MarkerClusterer(gmap, mapmarkers);
+                that.setMarkerClusterer(gmap, that.returnMapMarkers());
                 $('#maptags').append("<li> " + tag + " </li>")
             })
         };
@@ -440,11 +442,10 @@ function Map(){
             for (var i = 0, j = maps.length; i < j; i++) {
                 var marker = new google.maps.LatLng(maps[i].loc[0], maps[i].loc[1]);
                 bounds.extend(marker);
-                var url = maps[i]._id;
-                var fullurl = "<span class=\"markerlink\"><a href='/show/" + url + "'>View route</a></span>";
-                var title = "<span class=\"marker\">" + maps[i].title + " - " + fullurl + "</span";
-                that.placeSearchMarker(marker, title); 
-
+                var id = maps[i]._id;
+                var url = "<span class=\"markerlink\"><a href='/show/" + id + "'>View route</a></span>";
+                var desc = "<span class=\"marker\">" + maps[i].title + " - " + url + "</span";
+                that.placeSearchMarker(marker, desc); 
                 tagarrays.push(maps[i].tags);
         };
 
@@ -487,6 +488,10 @@ function Map(){
             var locationurl = "Sorry, no routes - you might like to add one <a href='/new?" + getparams + "'>here</a>";
             $("<li>").html(locationurl).appendTo("#showroutelist");
         }
+    }
+
+    this.setMarkerClusterer = function(gmap, mapmarkers){
+       mc = new MarkerClusterer(gmap, this.returnMapMarkers());
     }
 
     this.filterByTag = function(elem){

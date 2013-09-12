@@ -50,6 +50,7 @@ var imageCtrl = new imageController;
 var geocodeCtrl = new geocodeController;
 var map = new Map;
 var center = new google.maps.LatLng(<%= coords.lat %>, <%= coords.lng %>);
+var jmap = null;
 
 $(document).ready(function(){
     imageCtrl.init();
@@ -58,7 +59,7 @@ $(document).ready(function(){
     map.setPolyline(map.returnPolyLineNewOptions());
     map.addGmapListeners();
     map.addMarkerAndPolylineEdit();
-    map.collectMapAndSendToServer('#user-submit', '/new');
+    map.collectMapAndSendToServer('#user-submit', '/add');
    });
 
 </script>
