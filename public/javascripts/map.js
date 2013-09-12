@@ -319,7 +319,7 @@ function Map(){
 
     this.collectMapAndSendToServer = function(elem, url){
         var that = this;
-        $(elem).click(function () {
+        $(elem).click(function() {
             var tags = $('#tags').val().split(" ");
             var newtitle = $('#title').val();
             if (newtitle.length < 1) {
@@ -399,7 +399,6 @@ function Map(){
                 that.clearMarkersAndClusters();
                 that.clearElementsOnSearch();
                 that.processMapData(data);
-                that.setMarkerClusterer(gmap, that.returnMapMarkers());
             });
         };
     
@@ -411,7 +410,6 @@ function Map(){
                 that.clearMarkersAndClusters();
                 that.clearElementsOnSearch();
                 that.processTagData(data);
-                that.setMarkerClusterer(gmap, that.returnMapMarkers());
                 $('#maptags').append("<li> " + tag + " </li>")
             })
         };
@@ -448,6 +446,7 @@ function Map(){
                 that.placeSearchMarker(marker, desc); 
                 tagarrays.push(maps[i].tags);
         };
+        map.setMarkerClusterer(gmap, map.returnMapMarkers())
 
         $('#maptaglist').removeClass('hide-element');
         var flatarray = _.flatten(tagarrays);
@@ -497,14 +496,13 @@ function Map(){
     this.filterByTag = function(elem){
         var that = this;
             $(elem).delegate('li', 'click', function(){
-            var submittag = $(this).text().trim();        
-            var postbounds = gmap.getBounds();
-            that.processMapBounds(postbounds);
-            that.postBoundsAndTagToServer(boxarray, submittag);
-            google.maps.event.clearListeners(map, 'idle');
-            that.addTagListeners();
-            $('#showalltagsbutton').removeClass('hide-element');
-    
+                var tag = $(this).text().trim();        
+                var postbounds = gmap.getBounds();
+                that.processMapBounds(postbounds);
+                that.postBoundsAndTagToServer(boxarray, tag);
+                google.maps.event.clearListeners(map, 'idle');
+                that.addTagListeners();
+                $('#showalltagsbutton').removeClass('hide-element');
         })
     }
 
@@ -534,6 +532,46 @@ function Map(){
 
     }
 
+// Edit functions
+
+
+this.filterByTagWithoutSendingToServer = function(elem, array){
+    var that = this;
+    $(elem).delegate('li', 'click', function(){
+
+        var filtertag = $(this).text().trim(); 
+        that.clearElementsOnSearch();
+        $('#maptags').append("<li> " + filtertag + " </li>")
+        $('#showalltagsbutton').removeClass('hide-element');
+        that.clearMarkersAndClusters();
+        var filteredarrays = that.filterbytags(array, filtertag);
+        that.processTagData(filteredarrays);
+        
+    })
+}
+
+this.filterbytags = function(array, filtertag){
+    var filteredarrays = [];
+        array.forEach(function(object){
+            object.tags.forEach(function(tag){
+                if (tag === filtertag) {
+                    filteredarrays.push(object)
+                }
+            })
+        })
+    return filteredarrays;  
+}
+
+this.removeFilterForEdit = function(elem, array){
+    var that = this;
+    $(elem).click(function(){
+        that.clearElementsOnSearch();
+        that.clearMarkersAndClusters();
+        that.processMapData(array);
+        that.setMarkerClusterer(gmap, map.returnMapMarkers());
+    })
+}
+// Map, polyline options
     var polylineOptions = {
             path: mapwaypoints,
             strokeOpacity: 0.7,

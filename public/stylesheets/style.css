@@ -142,11 +142,12 @@ padding-right: 20px;
 #loginbox a {
   color: #FFFFFF; 
   text-decoration: none; 
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: normal;
 }
 
 #hometitle {
-    font-size: 200%;
+    font-size: 30px;
     font-weight: bold;
     margin: 0px;
     padding: 15px 0px 5px 0px;
@@ -895,21 +896,6 @@ margin-right: 0px;
   color: #FFFFFF; 
   text-decoration: none; 
   font-size: 16px;
-  font-weight: bold;
-}
-
-#loginbox {
-    float: right;
-    text-align: right;
-    margin: 0;
-    margin: 0;
-    padding: 5px 20px 0px 0px;
-}
-
-#loginbox a {
-  color: #FFFFFF; 
-  text-decoration: none; 
-  font-size: 12px;
   font-weight: bold;
 }
 

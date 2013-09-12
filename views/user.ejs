@@ -58,9 +58,8 @@ $(document).ready(function() {
         map.createMap('mymap', center, map.returnShowMapOptions(center));
         map.processMapData(jmaps);
         gmap.fitBounds(bounds);
-        map.setMarkerClusterer(gmap, map.returnMapMarkers());
-        map.filterByTag('#maptags');
-        map.removeFilterByTag('#showalltagsbutton');
+        map.filterByTagWithoutSendingToServer('#maptags', jmaps)
+        map.removeFilterForEdit('#showalltagsbutton', jmaps)
 
 });
 
