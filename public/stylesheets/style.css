@@ -420,6 +420,13 @@ div#mymap {
     height:100%;
 }
 
+div#overmap{
+    position: absolute;
+    z-index: 99;
+    margin-top: 10px;
+    margin-left: 25px;
+}
+
 /* NEW PAGE BUTTONS */
 
 .removeImage {
