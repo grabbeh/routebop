@@ -423,8 +423,8 @@ div#mymap {
 div#overmap{
     position: absolute;
     z-index: 99;
-    margin-top: 10px;
-    margin-left: 25px;
+    margin-top: 55px;
+
 }
 
 /* NEW PAGE BUTTONS */
@@ -562,9 +562,8 @@ div#stoptracking {
 }
 
 .neweditbutton {
-line-height: 65px;
-padding: 10px 25px 10px 25px;
-margin: 0 0 0 10px;
+
+
 cursor: pointer;
 }
 
@@ -657,6 +656,9 @@ color: #000000;
 .maplist li { padding:5px 0px 5px 5px; border-bottom: solid; border-width: 1px; border-bottom-color: #E8E8E8;}
 .maplist li:hover { background:#E8E8E8; 
 }
+
+.editbuttonslist { list-style:none; padding: 0; margin: 0 0 0 6px;}
+.editbuttonslist li { padding: 10px; margin-bottom: 10px;}
 
 #show-route-list-header {
   font-weight: bold;
