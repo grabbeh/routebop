@@ -873,6 +873,12 @@ margin-right: 0px;
     padding-right: 0px;
 }
 
+/* NEW SCREEN CHANGES */
+
+#userlocationsubmit {
+    margin-bottom: 10px;
+}
+
 /* HOME SCREEN CHANGES*/
 
 #hometitle {

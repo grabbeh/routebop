@@ -106,7 +106,6 @@ function Map(){
         };
     };
 
-
     this.placeMarker = function(location, desc, draggable) {
         var marker = new google.maps.Marker({
             position: location,
