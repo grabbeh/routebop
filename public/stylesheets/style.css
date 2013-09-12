@@ -128,7 +128,7 @@ padding-right: 20px;
   color: #FFFFFF; 
   text-decoration: none; 
   font-size: 22px;
-  font-weight: bold;
+  font-weight: normal;
 }
 
 #loginbox {
@@ -143,7 +143,6 @@ padding-right: 20px;
   color: #FFFFFF; 
   text-decoration: none; 
   font-size: 14px;
-  font-weight: normal;
 }
 
 #hometitle {
@@ -896,7 +895,22 @@ margin-right: 0px;
   color: #FFFFFF; 
   text-decoration: none; 
   font-size: 16px;
-  font-weight: normal;
+  font-weight: bold;
+}
+
+#loginbox {
+    float: right;
+    text-align: right;
+    margin: 0;
+    margin: 0;
+    padding: 5px 20px 0px 0px;
+}
+
+#loginbox a {
+  color: #FFFFFF; 
+  text-decoration: none; 
+  font-size: 12px;
+  font-weight: bold;
 }
 
 #homemap {
