@@ -5,8 +5,7 @@ var Map = require('../models/map.js');
 exports.getplace = function(req, res){
   var location = req.params.id;
     geo.geocode(location, function(err, data){
-    res.locals.lat = data.results[0].geometry.location.lat;
-    res.locals.lng = data.results[0].geometry.location.lng;
+    res.locals.coords = {lat: data.results[0].geometry.location.lat, lng: data.results[0].geometry.location.lng};
     res.render('search')
   })
 };

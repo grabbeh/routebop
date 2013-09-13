@@ -46,7 +46,7 @@
     var mc;
     var geocodeCtrl = new geocodeController;
     var map = new Map;
-    var center = new google.maps.LatLng(51.50678771873268, -0.12717489055171427)
+    var center = new google.maps.LatLng(<%= coords.lat %>, <%= coords.lng %>);
 
     $(document).ready(function() {
     

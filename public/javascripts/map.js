@@ -436,6 +436,7 @@ function Map(){
         var that = this;
         var tagarrays = [];
         if (maps.length > 0) {
+
             for (var i = 0, j = maps.length; i < j; i++) {
                 var marker = new google.maps.LatLng(maps[i].loc[0], maps[i].loc[1]);
                 bounds.extend(marker);
@@ -458,11 +459,13 @@ function Map(){
         }
     }
     else {
+        
         var lat = gmap.getCenter().lat();
         var lng = gmap.getCenter().lng();
         var getparams = $.param({lat:lat, lng:lng});
-        var locationurl = "Sorry - no routes for this place - maybe you'd like to add one <a href='/new?" + getparams + "'>here</a>";
-        $("<li>").html(locationurl).appendTo("#showroutelist");
+        var locationurl = "<li>Sorry - no routes for this place - maybe you'd like to add one <a href='/add?" + getparams + "'>here</a></li>";
+        
+        $(".showlist").append(locationurl);
         }
     }
 
@@ -531,7 +534,7 @@ function Map(){
 
     }
 
-// Edit functions
+// User functions
 
 
 this.filterByTagWithoutSendingToServer = function(elem, array){
@@ -561,7 +564,7 @@ this.filterbytags = function(array, filtertag){
     return filteredarrays;  
 }
 
-this.removeFilterForEdit = function(elem, array){
+this.removeFilterForUser = function(elem, array){
     var that = this;
     $(elem).click(function(){
         that.clearElementsOnSearch();
@@ -570,6 +573,7 @@ this.removeFilterForEdit = function(elem, array){
         that.setMarkerClusterer(gmap, map.returnMapMarkers());
     })
 }
+
 // Map, polyline options
     var polylineOptions = {
             path: mapwaypoints,
