@@ -173,7 +173,7 @@ padding-right: 20px;
 
 #searchbox {
     margin: 5px 0 0 0;
-    font-size: 30px;
+    font-size: 26px;
 }
 
 .homebutton {
@@ -200,7 +200,7 @@ padding-right: 20px;
 }
 
 #homebuttontext {
-    font-size: 200%;
+    font-size: 32px;
     text-align:center;
     font-weight:bold; 
     line-height: 120px;
