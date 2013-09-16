@@ -319,7 +319,7 @@ function Map(){
     this.collectMapAndSendToServer = function(elem, url){
         var that = this;
         $(elem).click(function() {
-            var tags = $('#tags').val().split(" ");
+            var tags = $('#tags').val().trim().split(" ");
             var newtitle = $('#title').val();
             if (newtitle.length < 1) {
                 alert('Please insert a title');
@@ -416,19 +416,19 @@ function Map(){
     this.addMapListeners = function(){
         var that = this;
         google.maps.event.addListener(gmap, "idle", function(){
-        var postbounds = gmap.getBounds();
-        that.processMapBounds(postbounds);
-        that.postBoundsToServer(boxarray);
+            var postbounds = gmap.getBounds();
+            that.processMapBounds(postbounds);
+            that.postBoundsToServer(boxarray);
        })
     };
     
     this.addTagListeners = function(){
         var that = this;
         google.maps.event.addListener(gmap, "idle", function(){
-        var newtag = $('#maptags').children().text().trim();     
-        var postbounds = gmap.getBounds();
-        that.processMapBounds(postbounds);
-        that.postBoundsAndTagToServer(boxarray, newtag);
+            var tag = $('#maptags').children().text().trim();     
+            var postbounds = gmap.getBounds();
+            that.processMapBounds(postbounds);
+            that.postBoundsAndTagToServer(boxarray, tag);
        });
     };
 
@@ -460,13 +460,18 @@ function Map(){
     }
     else {
         
+        that.returnCenterOfMapAsParams(function(getparams){
+            var locationurl = "<li>Sorry - no routes for this place - maybe you'd like to add one <a href='/add?" + getparams + "'>here</a></li>";
+            $(".showlist").append(locationurl);
+            })
+        }
+    }
+
+    this.returnCenterOfMapAsParams = function(func){
         var lat = gmap.getCenter().lat();
         var lng = gmap.getCenter().lng();
         var getparams = $.param({lat:lat, lng:lng});
-        var locationurl = "<li>Sorry - no routes for this place - maybe you'd like to add one <a href='/add?" + getparams + "'>here</a></li>";
-        
-        $(".showlist").append(locationurl);
-        }
+        func(getparams)
     }
 
 
@@ -483,11 +488,10 @@ function Map(){
             };
         }
         else {
-            var lat = gmap.getCenter().lat();
-            var lng = gmap.getCenter().lng();
-            var getparams = $.param({lat:lat, lng:lng});
-            var locationurl = "Sorry, no routes - you might like to add one <a href='/new?" + getparams + "'>here</a>";
-            $("<li>").html(locationurl).appendTo("#showroutelist");
+            that.returnCenterOfMapAsParams(function(getparams){
+            var locationurl = "<li>Sorry - no routes for this place with that tag - maybe you'd like to add one <a href='/add?" + getparams + "'>here</a></li>";
+            $(".showlist").append(locationurl);
+            })
         }
     }
 
@@ -499,11 +503,12 @@ function Map(){
         var that = this;
             $(elem).delegate('li', 'click', function(){
                 var tag = $(this).text().trim();        
+                google.maps.event.clearListeners(gmap, 'idle');
+                that.addTagListeners();
                 var postbounds = gmap.getBounds();
                 that.processMapBounds(postbounds);
                 that.postBoundsAndTagToServer(boxarray, tag);
-                google.maps.event.clearListeners(map, 'idle');
-                that.addTagListeners();
+                
                 $('#showalltagsbutton').removeClass('hide-element');
         })
     }
@@ -515,7 +520,7 @@ function Map(){
             var postbounds = gmap.getBounds();
             that.processMapBounds(postbounds);
             that.postBoundsToServer(boxarray);
-            google.maps.event.clearListeners(map, 'idle');
+            google.maps.event.clearListeners(gmap, 'idle');
             that.addMapListeners();
             $('#showalltagsbutton').addClass('hide-element');
         })
@@ -535,7 +540,6 @@ function Map(){
     }
 
 // User functions
-
 
 this.filterByTagWithoutSendingToServer = function(elem, array){
     var that = this;
