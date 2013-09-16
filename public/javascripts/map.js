@@ -502,13 +502,12 @@ function Map(){
     this.filterByTag = function(elem){
         var that = this;
             $(elem).delegate('li', 'click', function(){
-                var tag = $(this).text().trim();        
                 google.maps.event.clearListeners(gmap, 'idle');
-                that.addTagListeners();
+                var tag = $(this).text().trim();  
                 var postbounds = gmap.getBounds();
                 that.processMapBounds(postbounds);
                 that.postBoundsAndTagToServer(boxarray, tag);
-                
+                that.addTagListeners();
                 $('#showalltagsbutton').removeClass('hide-element');
         })
     }
@@ -517,10 +516,10 @@ function Map(){
         var that = this;
     
         $(elem).click(function(){
+            google.maps.event.clearListeners(gmap, 'idle');
             var postbounds = gmap.getBounds();
             that.processMapBounds(postbounds);
             that.postBoundsToServer(boxarray);
-            google.maps.event.clearListeners(gmap, 'idle');
             that.addMapListeners();
             $('#showalltagsbutton').addClass('hide-element');
         })
