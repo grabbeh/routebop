@@ -446,7 +446,7 @@ function Map(){
                 that.placeSearchMarker(marker, desc); 
                 tagarrays.push(maps[i].tags);
         };
-        map.setMarkerClusterer(gmap, map.returnMapMarkers())
+        that.setMarkerClusterer(gmap, that.returnMapMarkers())
 
         $('#maptaglist').removeClass('hide-element');
         var flatarray = _.flatten(tagarrays);
@@ -486,6 +486,7 @@ function Map(){
                 var title = "<span class=\"marker\">" + maps[i].title + " - " + fullurl + "</span";
                 that.placeSearchMarker(marker, title); 
             };
+            that.setMarkerClusterer(gmap, that.returnMapMarkers())
         }
         else {
             that.returnCenterOfMapAsParams(function(getparams){
@@ -543,15 +544,15 @@ function Map(){
 this.filterByTagWithoutSendingToServer = function(elem, array){
     var that = this;
     $(elem).delegate('li', 'click', function(){
-
         var filtertag = $(this).text().trim(); 
         that.clearElementsOnSearch();
+       
         $('#maptags').append("<li> " + filtertag + " </li>")
         $('#showalltagsbutton').removeClass('hide-element');
-        that.clearMarkersAndClusters();
         var filteredarrays = that.filterbytags(array, filtertag);
+        that.clearMarkersAndClusters();
         that.processTagData(filteredarrays);
-        
+       
     })
 }
 
@@ -572,8 +573,8 @@ this.removeFilterForUser = function(elem, array){
     $(elem).click(function(){
         that.clearElementsOnSearch();
         that.clearMarkersAndClusters();
+        $('#showalltagsbutton').addClass('hide-element');
         that.processMapData(array);
-        that.setMarkerClusterer(gmap, map.returnMapMarkers());
     })
 }
 
