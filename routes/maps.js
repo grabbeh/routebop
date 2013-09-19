@@ -108,26 +108,27 @@ else {
 // Locates individual map on basis of ID in url before returning map, stringifying and sending to server
 
 exports.show = function(req, res) {
-
-    var mapid = req.params.id;
+    
     var fav = false;
     var edit = false;
     var usermap = false;
-    Map.findOne({_id: mapid}, function(err, map) {
+    Map.findOne({_id: req.params.id}, function(err, map) {
         var mapid = map._id;
         var jmap = JSON.stringify(map);
+
             if (req.user) {
                   for (var i = 0; i < req.user.favourites.length; i++) {
-                        if (req.user.favourites[i].id == mapid) {
+                      console.log(req.user.favourites[i] + " " + mapid)
+                      if (JSON.stringify(req.user.favourites[i]) == JSON.stringify(mapid)) {
                             fav = true;
                             break;            
+
                       }
                    }
                 if (req.user._id === map.author){
                       edit = true;
                 }
               }
-            if (!err)
             switch (req.params.format) {
 
             case 'json':
@@ -144,10 +145,12 @@ exports.show = function(req, res) {
 // adds map to user's favourites and increments favourite count for particular map.
 
 exports.favourite = function(req, res) {
+  console.log(req.body);
 
     Map.findOne({_id: req.body.favourite}, function(err, map){
         if (!req.user) {var data = {}; data['message'] = "Please login to add this route to your account"; res.json(data);}
             map.update({favourited: req.body.plusone}, {upsert: true}, function(err) {
+              if (req.user) {
               User.findOne({_id: req.user._id}, function(err, user) {
                   user.update({$addToSet: {favourites: req.body.favourite}}, {upsert: true}, function(err) {
                        var data = {};
@@ -155,6 +158,7 @@ exports.favourite = function(req, res) {
                        res.json(data)
                       })
                   })    
+                  }
                })
             })
          }
