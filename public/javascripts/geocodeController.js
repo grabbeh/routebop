@@ -19,16 +19,16 @@ function geocodeController(){
         });
     }
 
-   this.geocodeByAddressOnSubmit = function(elem, elemTwo){
-        $(elem).click(function(){
-           that.geocodeAddress(elem);
+   this.geocodeByAddressOnSubmit = function(element, value){
+        $(element).click(function(){
+           that.geocodeAddress(value);
         });
     }
 
     this.init = function(elemOne, elemTwo, elemThree){
         this.geocodeByAddressOnEnter(elemOne)
         this.geocodeByUserLocation(elemTwo)
-        this.geocodeByAddressOnSubmit(elemThree)
+        this.geocodeByAddressOnSubmit(elemOne, elemThree)
     }
 
     this.geolocateerror = function(error){
