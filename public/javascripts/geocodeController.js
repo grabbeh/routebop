@@ -28,7 +28,7 @@ function geocodeController(){
     this.init = function(elemOne, elemTwo, elemThree){
         this.geocodeByAddressOnEnter(elemOne)
         this.geocodeByUserLocation(elemTwo)
-        this.geocodeByAddressOnSubmit(elemOne, elemThree)
+        this.geocodeByAddressOnSubmit(elemThree, elemOne)
     }
 
     this.geolocateerror = function(error){
