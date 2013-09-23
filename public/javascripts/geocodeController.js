@@ -25,10 +25,10 @@ function geocodeController(){
         });
     }
 
-    this.init = function(elemOne, elemTwo, elemThree){
-        this.geocodeByAddressOnEnter(elemOne)
-        this.geocodeByUserLocation(elemTwo)
-        this.geocodeByAddressOnSubmit(elemThree, elemOne)
+    this.init = function(value, geoelement, submitelement){
+        this.geocodeByAddressOnEnter(value)
+        this.geocodeByUserLocation(geoelement)
+        this.geocodeByAddressOnSubmit(submitelement, value)
     }
 
     this.geolocateerror = function(error){
