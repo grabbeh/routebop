@@ -145,8 +145,6 @@ exports.show = function(req, res) {
 // adds map to user's favourites and increments favourite count for particular map.
 
 exports.favourite = function(req, res) {
-  console.log(req.body);
-
     Map.findOne({_id: req.body.favourite}, function(err, map){
         if (!req.user) {var data = {}; data['message'] = "Please login to add this route to your account"; res.json(data);}
             map.update({favourited: req.body.plusone}, {upsert: true}, function(err) {
