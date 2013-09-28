@@ -44,8 +44,8 @@ passport.use(new LocalStrategy(
         if (err) { return done(err); }
         if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
           bcrypt.compare(password, user.hash, function(err, res) {
-          if (err) { return done(null, false, { message: 'Invalid password' }); }
-              return done(null, user);
+            if (res){ return done(null, user)}
+            else return done(null, false)
             });
         })
     });
